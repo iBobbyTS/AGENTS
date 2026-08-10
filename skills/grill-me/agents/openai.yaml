@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grill Me — Requirements"
+  short_description: "Find missing product requirements without pushing architecture decisions to the user."
+  default_prompt: "Use $grill-me to find omitted or ambiguous product requirements before planning; ask me only about human-owned product semantics, and leave architecture and implementation decisions to the agent."

@@ -100,13 +100,12 @@ skill sectioned_feature_development() {
 }
 ```
 
+#### [grill-me](skills/grill-me)
+用户需要可以描述清楚自己的需求，Agent用这个skill只问用户没描述清的部分，不问架构/代码层面的问题。
+> This skill is an independently rewritten, requirements-focused adaptation inspired by Matt Pocock's `grill-me` / `grilling` skills from https://github.com/mattpocock/skills. The upstream project is licensed under the MIT License. Upstream copyright: Copyright (c) 2026 Matt Pocock
+
 
 > 注：下面3个skill都是根据[Superpowers](https://github.com/obra/superpowers) [v5.1.0](https://github.com/obra/superpowers/releases/tag/v5.1.0)  做的 “Codex-native” 版本。没有照搬 Superpowers 是因为它的约束过重，对于Codex这样的高级智能体会浪费过多token，所以修改后的都是手动/条件触发，不是默认触发。
-
-#### [manual-brainstorming](skills/manual-brainstorming/)
-
-根据 `brainstorming` 修改而来，只有用户主动触发才会走这套完整的流程，避免小改动也浪费时间和token。<br>
-删除了plan保存要求和plan文件的commit，继续按照 [AGENTS.md](#agentsmd文件) 就行。
 
 #### [manual-git-worktree](skills/manual-git-worktree/)
 
