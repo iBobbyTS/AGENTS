@@ -1,26 +1,22 @@
 # Feature Integration Review Request
 
-- Review mode: `INTEGRATION`
-- Working path: `<path>`
-- Feature: `<name>`
-- Feature base: `<commit>`
-- Feature head: `<commit>`
-- Feature contract: `.agent-work/PLAN-FULL.md`
-- Feature state: `.agent-work/FEATURE-STATE.md`
-- Section artifacts: `.agent-work/sections/`
-- Review index: `.agent-work/reviews/`
-- Output: `.agent-work/reviews/FEATURE-INTEGRATION-r01.md`
-- Review skill: `$code-review`
+Review the integrated feature candidate `{feature base..head}` in `{repository}` against `{original feature acceptance criteria}` — one round of an `INTEGRATION` review proving what local section reviews could not.
 
-## Required Focus
+- Execution target:
+- No product writer/reviewer is active: `yes`
+- Frozen feature product/test head:
+- Feature ID / plan:
+- Accepted section summary:
+- Repository-required gates:
+- Required end-to-end checks:
+- Output path:
 
-- Original full-feature goal, non-goals, and requirement coverage.
-- Cross-section API/schema/state/permission/order/error contracts.
-- End-to-end happy, negative, and partial-failure paths.
-- Migration, compatibility, rollout, rollback, feature flags, and cleanup.
-- Security, privacy, reliability, performance, observability, and operations.
-- Deferred-work closure and branch-scope integrity.
+Review only what local section reviews could not prove:
 
-## Review Semantics
+- original feature outcome and non-goals;
+- emergent cross-section API/schema/state/permission/ordering/error behavior;
+- required migration, compatibility, rollout, rollback, cleanup, and observability;
+- representative end-to-end paths;
+- branch-scope integrity.
 
-Do not mechanically replay every accepted section line by line. Form an independent view of the current integrated state, then use prior section ledgers to verify closure and identify evidence gaps. Report `mergeable`, `not-mergeable`, or `insufficient-evidence`.
+Use the same classes and blocking proof as section review: admit only feature-diff-caused composition defects, a necessary merge-blocking dependency on a real feature acceptance path, or an evidence gap tied to an existing feature acceptance criterion or repository-required gate. Composition creates no authority to add stronger product/security/durability/compatibility/observability/rollout promises, routes, analyzers, governance, or browser flows; do not repeat local section review, audit unrelated repository code, or reopen an accepted section without concrete combined-behavior evidence. Return the report to the parent at the stated output path; a missing actual report means INSUFFICIENT_EVIDENCE, never an implicit clean.

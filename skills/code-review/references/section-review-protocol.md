@@ -1,6 +1,10 @@
+# STANDALONE reference
+
+For DELEGATED_PASS, [delegated-pass.md](delegated-pass.md) is authoritative; do not run standalone acceptance/repair loops inside a parent task.
+
 # Section-Aware Review Protocol
 
-Use this protocol when `$code-review` is invoked by a sectioned large-feature workflow. It extends the ordinary review protocol without replacing its evidence, finding, repair, reset, or convergence rules.
+Use this protocol for standalone `SECTION`, section-scoped `DELTA`, checkpoint or final `INTEGRATION` reviews of a sectioned feature. It extends the ordinary review protocol without replacing its evidence, finding, repair, reset, or convergence rules.
 
 ## Contents
 
@@ -164,9 +168,9 @@ Return `section-accepted` only when:
 - Deferred work is explicit and assigned.
 - The section preserves relevant feature-level invariants.
 
-One clean, coverage-complete section review is sufficient when there was no repair. After repair, one successful `DELTA` verification is sufficient unless a reset trigger fires. Do not require two empty full-section reviews.
+Two consecutive clean rounds are required: with no repair, one coverage-complete clean section review plus one confirming clean round on the same candidate; after repair, one successful `DELTA` verification plus one confirming clean round on the final candidate. Any repair or reset trigger restarts the count.
 
-A separate `FINAL` pass is optional for an ordinary section. Use it for unusually high-risk sections or when reviewer independence materially adds evidence. The feature still requires one final `INTEGRATION` review.
+The confirming clean round is a separate fresh `FINAL` pass required for every section, not only unusually high-risk ones. The feature still requires one final `INTEGRATION` review.
 
 ## 7. Section reset triggers
 
@@ -242,7 +246,7 @@ This verdict is provisional and does not establish whole-feature merge readiness
 Review mode: SECTION.
 Review section {ID} in {working path} from {section_base} to {section_head}.
 Read {feature_contract}, {section_contract}, and {handoff}.
-Use [$code-review]({skill path}/SKILL.md).
+Use [$code-review]({skill-dir}/SKILL.md).
 Write the review to {output_path}.
 Do not repair and do not review the whole feature except for the direct impact cone.
 ```
@@ -253,7 +257,7 @@ Do not repair and do not review the whole feature except for the direct impact c
 Review mode: DELTA.
 Verify findings {IDs} for section {ID} in {working path} from {repair_base} to {repair_head}.
 Read the frozen findings at {ledger_path} and review only the repair delta plus its invalidated impact cone.
-Use [$code-review]({skill path}/SKILL.md).
+Use [$code-review]({skill-dir}/SKILL.md).
 Write the result to {output_path}.
 ```
 
@@ -263,7 +267,7 @@ Write the result to {output_path}.
 Review mode: INTEGRATION.
 Review feature {name} in {working path} from {feature_base} to {feature_head}.
 Read {feature_contract}, {feature_state}, section artifacts, and the review index.
-Use [$code-review]({skill path}/SKILL.md).
+Use [$code-review]({skill-dir}/SKILL.md).
 Focus on full acceptance and cross-section interactions; do not mechanically replay every accepted local line.
 Write the review to {output_path}.
 ```

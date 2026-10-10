@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Review"
-  short_description: "Evidence-driven review with bounded repair convergence"
-  default_prompt: "Use $code-review to inspect this bounded change, report evidence-backed findings, and state the correct section or merge-readiness verdict."
+  short_description: "One evidence-based bounded code review pass"
+  default_prompt: "Use $code-review for one bounded review of the supplied change. Return evidence-backed candidates, coverage and gaps; leave admission and scheduling to the parent workflow."

@@ -1,3 +1,7 @@
+# STANDALONE reference
+
+For DELEGATED_PASS, [delegated-pass.md](delegated-pass.md) is authoritative; do not run standalone acceptance/repair loops inside a parent task.
+
 # Code Review Ledger Templates
 
 Use these templates for `Large` reviews, repair-enabled loops, or work that must survive context compression. Keep agent-facing ledgers in English. Write the final `REPORT.md` in Chinese.

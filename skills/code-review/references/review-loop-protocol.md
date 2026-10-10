@@ -1,3 +1,7 @@
+# STANDALONE reference
+
+For DELEGATED_PASS, [delegated-pass.md](delegated-pass.md) is authoritative; do not run standalone acceptance/repair loops inside a parent task.
+
 # Review Loop Protocol
 
 Use this protocol for a review that may repair findings and iterate. Its purpose is to maximize first-pass discovery while making later rounds incremental, evidence-driven, and convergent.
@@ -352,7 +356,7 @@ The final verifier should not redo every low-risk line. It should challenge the 
 
 - One `FULL` discovery round.
 - Up to three repair waves under normal conditions.
-- One `FINAL` fresh verification for a large ordinary review or final integration gate. It is optional for a section with no repair; after section repair, a successful independent `DELTA` verification normally suffices unless risk or a reset trigger justifies more.
+- One `FINAL` fresh verification, the confirming clean round required before completion: with no repair it follows the initial clean review; after repair it follows the successful `DELTA` verification. A large ordinary review or final integration gate uses the same confirming pass; a reset trigger restarts the count.
 
 ### Hard cap
 
@@ -418,7 +422,7 @@ The agent must not close a finding because “I fixed it.” It must close it be
 For `SECTION` and `INTEGRATION` review packets, also follow `section-review-protocol.md`.
 
 ```text
-Review {working path}, [$code-review]({skill path}/SKILL.md)
+Review {working path}, [$code-review]({skill-dir}/SKILL.md)
 ```
 
 Keep this prompt minimal to preserve independent variation. The reviewer gathers the repository context itself.
@@ -443,7 +447,7 @@ Reopen any finding whose acceptance criterion is not proven. Create new IDs only
 ### Fresh final verifier
 
 ```text
-Perform a fresh merge-readiness verification of {bounded change} in {working path} using [$code-review]({skill path}/SKILL.md).
+Perform a fresh merge-readiness verification of {bounded change} in {working path} using [$code-review]({skill-dir}/SKILL.md).
 Start from the current repository, authoritative intent, and invariants. Independently inspect the highest-risk paths before reading prior review rationalizations. Verify current closure evidence and report any new material root-cause class.
 ```
 

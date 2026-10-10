@@ -1,56 +1,12 @@
-# Section Handoff：<Sxx — Title>
+# Handoff — <feature / parent / child>
 
-## Baseline
+- Actual writer ID, requested role/model/effort; observed metadata or UNKNOWN:
+- Task/PLAN references, repository/branch, base → candidate:
+- Actual behavior and changed paths:
+- Changed boundary, when applicable: actual redacted request/response fixture or exact source/test reference; encoding, subset/global, failure/late-result meaning; named consumers:
+- Planned example changes and why; unobserved output explicitly marked, not claimed as captured evidence:
+- Tests/checks: command, relevant input/head/environment, outcome, output reference:
+- Remaining parent behavior, joint-oracle needs, no-future-scope statement:
+- Risks/owner decisions/gaps:
 
-- Section: `<Sxx / Sxx.n>`
-- Lineage: `<original or parent -> child>`
-- Replan generation: `<0+>`
-- Current review round: `<0..5>`
-- Section base: `<commit or fingerprint>`
-- Current head: `<commit or fingerprint>`
-- Contract: `.agent-work/sections/<Sxx>-CONTRACT.md`
-- Commit(s): `<ids or N/A>`
-- Handoff type: `IMPLEMENTATION | REPAIR`
-
-## Behavior Implemented
-
-- <acceptance criterion -> implementation evidence>
-
-## Changed Scope
-
-| File/symbol/workflow | Change | Why in scope |
-|---|---|---|
-| `<path>` | <...> | <...> |
-
-## Decisions and Assumptions
-
-| Item | Decision/assumption | Authority/evidence |
-|---|---|---|
-| <...> | <...> | <...> |
-
-## Verification Evidence
-
-| Command/evidence | Result | Relevant criterion/finding |
-|---|---|---|
-| `<command>` | pass/fail/blocked | Sxx-AC-01 |
-
-## Repair Record
-
-| Finding ID | Repair summary | Files | Check |
-|---|---|---|---|
-| REV-xxx | <...> | `<...>` | `<...>` |
-
-## Suggested Impact Cone
-
-- Callers/callees: <...>
-- Contracts/schemas/migrations: <...>
-- Permissions/state/concurrency: <...>
-- Tests/config/operations: <...>
-
-## Known Limitations and Deferred Work
-
-- <item -> owner section or explicit blocker>
-
-## Reviewer Notes
-
-This handoff is a claim to verify. Review the repository and raw diff independently.
+Preserve the worker's actual result once. Main may add Git verification, not rewrite failed/unknown results into success.
