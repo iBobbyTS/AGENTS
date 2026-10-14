@@ -123,7 +123,7 @@ The reviewer receives:
 - frozen scope manifest: allowed-to-edit owners, inspect-only dependency paths, excluded mechanisms, and direct impact cone;
 - relevant repository rules;
 - required checks;
-- output path for transient candidates.
+- the dispatched report path — the reviewer's single authorized `.agent-work` write.
 
 The reviewer should:
 
@@ -193,14 +193,7 @@ It reports only a new `DIFF_CAUSED`, tightly proven `MERGE_BLOCKING_DEPENDENCY`,
 
 ## Sticky coverage
 
-Record reviewed coverage in the [section ledger](../assets/REVIEW-LEDGER.template.md):
-
-- changed files and symbols;
-- critical paths;
-- contracts and invariants;
-- triggered risk lenses;
-- tests/experiments;
-- explicit gaps.
+Record reviewed coverage in the parent's FEATURE-STATE ledger lines, referencing the reviewer's own report file for detail: changed files and symbols; critical paths; contracts and invariants; triggered risk lenses; tests/experiments; explicit gaps.
 
 Deterministic check evidence remains reusable until its inputs/environment change. Prior review coverage is an opinion, not proof that unchanged in-scope code is correct; full bounded B may discover a missed defect. Preserve unaffected entries across delta reviews and closing rounds.
 

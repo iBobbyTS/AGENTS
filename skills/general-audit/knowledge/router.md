@@ -8,6 +8,7 @@ Start with an observed boundary and the next phase's decision. Compose only nonr
 |---|---|
 | Establish intended outcome vs current system | Matching domain; behavior-contract only when intent/scope drift matters |
 | Investigate a path | Actual mechanism + technical semantics that change the explanation |
+| Check guidance, examples or docs-only changes | Documentation integrity; ai-led for generated/context artifacts; behavior-contract if authority conflicts |
 | Rely on tests or a clean tool summary | Oracles / population; verification-system for suite-wide trust questions |
 | Judge accumulated design/AI development | Architecture / ai-led; process-effectiveness only for evidence about the development process |
 | Bind a release to its real target | Artifact identity; domain for the actual consumer |
@@ -20,4 +21,4 @@ Before a substantive phase, check whether already-loaded knowledge is sufficient
 
 A familiar syntax rule is not a knowledge-loading reason. Unfamiliar/version-dependent semantics may need primary documentation for the installed version. An unlisted framework retains useful domain/mechanism matches; use [fallback](fallback.md) only for the unresolved seam. Don't guess Rust→Tokio, AI-written code→AI product, public package→live server, or audit→permission to operate production.
 
-**Knowledge ownership:** test expected-result independence lives in `oracles`, inspected/executed scope in `population`, suite economics/blind spots in `verification-system`; build/distribution identity in `release/artifact-identity`, supply-chain trust in `supply-chain`; practical detection/recovery in `recovery`, version-transition compatibility in `release/transition`. Link rather than repeat. A project profile describes stable facts and constraints, not another copy of these mechanisms.
+**Knowledge ownership:** documentation claims, usability and delivery live in `documentation-integrity`; correlated generation and context/summary drift in `ai-led`. Test expected-result independence lives in `oracles`, inspected/executed scope in `population`, suite economics/blind spots in `verification-system`; build/distribution identity in `release/artifact-identity`, supply-chain trust in `supply-chain`; practical detection/recovery in `recovery`, version-transition compatibility in `release/transition`. Link rather than repeat. A project profile describes stable facts and constraints, not another copy of these mechanisms.

@@ -28,7 +28,7 @@ Review one bounded change set with senior-engineer judgment. Optimize for real m
 ## Boundary
 
 - Review the specified pull request, commit range, staged/unstaged diff, or explicitly named change set.
-- Do not expand into a periodic whole-repository audit; use `$general-audit` for that.
+- Do not expand into a periodic whole-repository audit; use `$code-audit` for that.
 - Review only by default. Repair findings only when the user or orchestrator explicitly authorizes repair.
 - Treat agent-authored code, summaries, PR descriptions, test claims, and prior review conclusions as plausible but untrusted.
 - Preserve user work. Do not reset, clean, merge, approve, push, post comments, or alter branch history unless explicitly asked.

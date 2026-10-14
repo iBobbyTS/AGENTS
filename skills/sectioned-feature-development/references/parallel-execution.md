@@ -26,7 +26,7 @@ Read-only shared source is safe if no active worker changes its contract. Unknow
 2. Ensure ignore entry, then `mkdir -p ./git-worktree`. Main may make this expressly authorized `.gitignore` setup edit and a narrow setup commit before worker dispatch; freeze worker bases after that commit. Use canonical scope paths, not symlink aliases.
 3. `git worktree add -b <section-branch> ./git-worktree/<run-id>-<section-id> <accepted-feature-head>`.
 4. Pass the absolute worktree path, base SHA and task packet to exactly one writer.
-5. Review a committed immutable candidate in a separate detached snapshot where practical; check product diff/fingerprint before and after review. Workflow files/results are local or returned to parent.
+5. Review a committed immutable candidate in a separate detached snapshot where practical; check product diff/fingerprint before and after review. A worktree worker's report file lives inside that worktree's dispatched `.agent-work` path; main collects the worker-authored file itself into the main checkout's `.agent-work/{handoffs,reviews}/{feature}/` at candidate freeze — collecting the authored file is not copying a returned report body.
 6. Main serializes accepted section commits into the feature branch in PLAN integration order using normal local merge/cherry-pick. This is internal feature integration, not merge to main.
 7. If the target feature head changed on a sibling's direct impact cone, rerun composition checks. A conflict requiring semantic changes returns to the relevant owner; don't silently accept an automatic conflict resolution.
 8. Preserve worktrees unless cleanup was separately authorized. Do not run broad reset/clean/remove commands to tidy evidence.

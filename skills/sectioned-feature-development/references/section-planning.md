@@ -256,7 +256,7 @@ Every `PLAN_BLOCKER` must include:
 - smallest plan-only correction;
 - confirmation that the correction adds no new product guarantee.
 
-The main agent owns admission. Record one compact ledger in `.agent-work/reviews/PLAN-REVIEW.md`; do not create RAW/ADMISSION pairs. A missing original example/test mapping is a `PLAN_BLOCKER`; an obsolete instruction retained after a user correction is `PLAN_SCOPE_EXPANSION`.
+The main agent owns admission. Record admission compactly in FEATURE-STATE ledger lines, preserving the reviewers' own report files separately; do not create RAW/ADMISSION pairs. A missing original example/test mapping is a `PLAN_BLOCKER`; an obsolete instruction retained after a user correction is `PLAN_SCOPE_EXPANSION`.
 
 ### Sufficient detail, not a fully prewritten implementation
 

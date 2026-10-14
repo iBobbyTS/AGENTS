@@ -11,6 +11,6 @@ Main judges its own scheduling and process efficiency at four fixed points, reco
 
 ## Record and report
 
-The efficiency log is one field in FEATURE-STATE: a line per checkpoint (checkpoint, observation, adjustment), appended at the checkpoint itself, never reconstructed afterwards. It archives with FEATURE-STATE and has no separate lifecycle. The per-round admitted / rejected / duplicate counts live in the review ledger and are referenced, not duplicated, here.
+The efficiency log is one field in FEATURE-STATE: a line per checkpoint (checkpoint, observation, adjustment), appended at the checkpoint itself, never reconstructed afterwards. It archives with FEATURE-STATE and has no separate lifecycle. The per-round admitted / rejected / duplicate counts live in the same FEATURE-STATE per-section ledger lines and are referenced, not duplicated, here.
 
 Never rerun a check, dispatch a model call or delay product work to fill the log; missing data is recorded as unknown. The log observes the process — it does not change admission, coverage or repair budgets. Cross-feature process retrospective belongs to general-audit.

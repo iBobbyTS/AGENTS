@@ -14,6 +14,6 @@ Each material candidate names changed-code cause, supported reachable trigger, p
 
 Never forward this pass to another reviewer or transport, and never relabel a result as another provider's. The shared skill name is methodology, not transport identity. Apply the curated task constraints and this self-contained role instruction. No edits, repairs, commits or delegation.
 
-## Return
+## Report
 
-Include pass/parent/child IDs from the packet, coverage, checks reused/run/gaps, candidate proof, pending behavior and relevant checkpoint invalidations. Successful runtime exit or a valid artifact hash is not a semantic CLEAN. Only main decides the next allowed unit.
+Write pass/parent/child IDs from the packet, coverage, checks reused/run/gaps, candidate proof, pending behavior and relevant checkpoint invalidations into the dispatched report file; the final answer carries only the signal, the report path and one line of status. Successful runtime exit or a valid artifact hash is not a semantic CLEAN. Only main decides the next allowed unit.

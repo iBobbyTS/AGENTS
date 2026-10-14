@@ -7,6 +7,11 @@
 - Invariants / producer-consumer example / named consumer disposition:
 - Acceptance examples / meaningful regression checks / known gaps:
 - Bounded implementation or admitted repair finding IDs:
-- Return: changed files, diff, checks/results, remaining blockers
+- Dispatched report path (your only writable `.agent-work` location) and its template:
+- Final answer: the report path, one-line status and — for reviewers — the verdict signal; unfinished or failed work described as exceptions, never the report body.
 
-Do not spawn another agent or proxy an external call. If review/prerequisites are still pending, return WAITING_FOR_REVIEW without writes. Never broaden scope or touch another task's state. The orchestrator owns admission, integration and successors. Name repository artifacts by feature or behavior, never by a section ID.
+<!-- Coordinator note (do not ship): everything else the worker needs is already
+     bound by its developer instruction — never duplicate role law, git
+     prohibitions or scheduling metadata into this packet. -->
+
+Name repository artifacts by feature or behavior, never by a section ID.

@@ -25,7 +25,7 @@ After a failure first distinguish model/semantic, plan/requirement, environment/
 
 ## Bounded exploration
 
-Use the embedded profile's explorer route for one bounded owner/consumer/test map when cheaper than main reading directly. Respect applicable CodeGraph ordering. Return path/symbol/line, source head, claim→evidence, unknowns and a suggested next read; usually at most eight source pointers, with an explicit truncation note when necessary. No product decisions, writes, plan rewriting, acceptance or nested subagents.
+Use the embedded profile's explorer route for one bounded owner/consumer/test map when cheaper than main reading directly. Respect applicable CodeGraph exploration rules. Return path/symbol/line, source head, claim→evidence, unknowns and a suggested next read directly in the final answer; usually at most eight source pointers, with an explicit truncation note when necessary. The explorer writes no report file and never touches `.agent-work`. No product decisions, plan rewriting, acceptance or nested subagents.
 
 Requested and observed model/effort are separate facts recorded in the existing ledger fields; whether a wrong-route result may fill an intended slot is judged when the result returns ([reviewer-orchestration.md](reviewer-orchestration.md)), and the efficiency impact of a mismatch is reviewed at the per-section [efficiency checkpoint](efficiency-checkpoints.md). No extra production experiments are authorized for measurement.
 

@@ -8,13 +8,17 @@ Main owns requirements, PLAN-FULL and readable FEATURE-STATE; real actors, tests
 .agent-work/REQUIREMENTS.md
 .agent-work/PLAN-FULL.md
 .agent-work/FEATURE-STATE.md
-.agent-work/sections/S01-TASK.md
-.agent-work/sections/S01-HANDOFF.md
-.agent-work/reviews/PLAN-REVIEW.md
-.agent-work/reviews/S01-REVIEW.md
+.agent-work/sections/{feature}/S01-TASK.md
+.agent-work/handoffs/{feature}/S01-HANDOFF.md
+.agent-work/reviews/{feature}/S01-A.md
+.agent-work/evidence/{feature}/<check>.log
 ```
 
-PLAN ([template](../assets/PLAN.template.md)) and section contract ([template](../assets/SECTION-CONTRACT.template.md)) extracts are disposable views of PLAN-FULL, not independently maintained authorities. One parent task/handoff/ledger carries its children's checkpoints. Record actual actor IDs and evidence references once, not a new hierarchy for each child.
+The TASK dispatch view `sections/{feature}/{id}-TASK.md` is the only dispatch view: generated from frozen PLAN-FULL by `section_plan.py extract --output` plus the [template](../assets/TASK-PACKET.template.md) header fields — never hand-written or duplicated elsewhere. The section contract lives inside PLAN-FULL and travels inside the TASK view; review coverage, per-round admitted/rejected/duplicate counts and finding status live in FEATURE-STATE ledger lines plus the reviewer's own report file. One parent task/handoff/ledger carries its children's checkpoints. Record actual actor IDs and evidence references once, not a new hierarchy for each child.
+
+Subagent intermediate call products — native partial work and external spawn/wait/close/final raw returns — are never copied or saved as files; identity, transport and outcome go into FEATURE-STATE ledger lines. The only preserved subagent artifacts are the report files workers and reviewers write themselves into their dispatch-authorized `.agent-work` report folder; main never copies a returned report body into a file.
+
+Raw command/check output that reports reference — test runs, builds, gate logs — lives under `.agent-work/evidence/{feature}/`, one file per named check with its exit status; main collects it for the checks it runs (Tier 2/3, integration and final gates) and for any worker-run output too long for a HANDOFF field. Reports and FEATURE-STATE cite the file; they never paste full logs. Workers write no evidence files themselves — their HANDOFF fields carry command, exit status and key lines inline. These are actual run outputs collected by main, not subagent intermediate call products.
 
 ## Bootstrap and planning
 
@@ -37,7 +41,7 @@ Example handoff: "PLAN result read and admitted; S01 accepted at <head>, integra
 
 A review report is an observation; only main admission plus required coverage/checks closes a boundary. A current-unit repair is a permitted writer handoff only after the originating reviewer has returned and main has frozen admitted findings; it does not require current-parent acceptance and does not authorize work on the next parent.
 
-Main does not implement or repair product/test code. Main makes the narrow implementation/repair commit from the worker's finished patch after checks, without editing the patch itself; this is mechanical Git work. Never ask a worker to escape its sandbox to commit.
+Main does not implement or repair product/test code. Main makes the narrow implementation/repair commit from the worker's finished working-tree changes after checks, reading the actual diff from the working tree itself and never editing the worker's changes; this is mechanical Git work. Never ask a worker to escape its sandbox to commit.
 
 Freeze product/test head before review. No conflicting writer remains live. Main admits only bounded material findings; writers repair the admitted scope, and reviewers verify deltas. Both independent clean coverages must cover the final candidate ([reviewer-orchestration.md](reviewer-orchestration.md)). Children are checkpoints, not independent two-round acceptance nodes. Follow the original five-wave parent repair lineage; an actor failure does not replenish it. Evidence unaffected by a repair is reused. Keep safe intermediate states and explicit independent-parent parallel permissions.
 
@@ -54,9 +58,9 @@ Archiving is part of this skill's own completion flow, not an optional extra: it
 Move into it:
 
 - the completed `PLAN-FULL.md`;
-- real evidence that cannot be rebuilt from PLAN-FULL: original `REQUIREMENTS.md`, final `FEATURE-STATE.md` (including the efficiency log), reviewer reports under `reviews/`, worker HANDOFF files.
+- real evidence that cannot be rebuilt from PLAN-FULL: original `REQUIREMENTS.md`, final `FEATURE-STATE.md` (including the efficiency log), reviewer reports under `reviews/`, worker HANDOFF files, raw check output under `evidence/`.
 
-Delete the rebuildable dispatch views generated during the run: `PLAN.md`, section PLAN/CONTRACT extracts, and the TASK/review request packets split out of PLAN-FULL for subagents. They are derived views, not evidence.
+Delete the rebuildable dispatch views generated during the run: the generated `TASK-*.md` views (and any legacy `PLAN.md`/contract extract left by an older run). They are derived views, not evidence; review requests live inside dispatch messages, not as separate files.
 
 Before any move or deletion, make a read-only inventory (path, kind, bytes, task, references). This skill's completion instruction authorizes this archive step and the removal of only its owned, unreferenced generated views. Do not recursively move/delete the whole task tree, delete live references, touch unrelated files, or remove an existing archive. Use the optional archive_plan.py helper with explicit keep/view paths and --apply; it defaults to inventory-only. A task with unresolved live references remains a cleanup blocker, not a reason to delete those references.
 

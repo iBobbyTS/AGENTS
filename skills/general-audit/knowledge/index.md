@@ -1,6 +1,6 @@
 # Knowledge index
 
-28 canonical cards; no complete-world claim and no requirement to read all. Use [router](router.md) by actual question.
+29 canonical cards; no complete-world claim and no requirement to read all. Use [router](router.md) by actual question.
 
 ## Outcome / domain
 | Card | Concrete trigger |
@@ -22,6 +22,7 @@
 | [Capacity/progress](mechanisms/capacity-progress.md) | Real limits, growing work and continuation |
 | [Architecture](mechanisms/architecture.md) | Ownership, repeated cross-boundary cost, parallel mechanisms |
 | [Supply chain](mechanisms/supply-chain.md) | Trust in code/dependencies/build privilege/distribution |
+| [Documentation integrity](mechanisms/documentation-integrity.md) | Relied-on claims, missing guidance, examples and reader-facing delivery |
 | [Verification system](mechanisms/verification-system.md) | Test-suite selection, blind spots, flake and confidence |
 
 ## Actual technology semantics

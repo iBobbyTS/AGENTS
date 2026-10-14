@@ -77,4 +77,4 @@
 
 ## 集成与完成
 
-父级 reconciliation 与独立 coverage pair（Clean A + Clean B）通过才接受 S02。验证组装后的 product/test head，记录实际结果和缺口，然后关闭并归档到 .agent-work/archive/{YYYYMMDD-HHMM_feature-id}/：PLAN-FULL 连同需保留的真实证据（原始需求、终态 FEATURE-STATE（含 efficiency log）、评审报告、HANDOFF），删除可从 PLAN-FULL 重建的派发视图（PLAN 摘录、section/task 拆分件）。后续用户请求默认重新评估。
+父级 reconciliation 与独立 coverage pair（Clean A + Clean B）通过才接受 S02。验证组装后的 product/test head，记录实际结果和缺口，然后关闭并归档到 .agent-work/archive/{YYYYMMDD-HHMM_feature-id}/：PLAN-FULL 连同需保留的真实证据（原始需求、终态 FEATURE-STATE（含 efficiency log）、评审报告、HANDOFF），删除生成的 TASK-*.md 派发视图。后续用户请求默认重新评估。

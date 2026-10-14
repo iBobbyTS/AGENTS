@@ -1,6 +1,6 @@
 ---
 name: general-audit
-description: Audit accumulated software quality beyond a single change, including actual behavior, implementation, test trust, architecture, reliability, security and relevant delivery-process effectiveness. Use for baseline, routine, focused or milestone investigations and finding verification. Works without quality-steward or CI. Release-specific readiness belongs to deployment-preflight. A reminder or steward proposal is not audit authorization.
+description: Audit accumulated software quality beyond a single change, including actual behavior, implementation, documentation integrity, test trust, architecture, reliability, security and relevant delivery-process effectiveness. Use for baseline, routine, focused or milestone investigations and finding verification. Works without quality-steward or CI. Release-specific readiness belongs to deployment-preflight. A reminder or steward proposal is not audit authorization.
 ---
 
 # General audit
@@ -34,7 +34,9 @@ State practical bounds and selected questions in a short plan paragraph. Identif
 
 Read the compact [knowledge router](knowledge/router.md). Before each substantive investigation phase, select only knowledge that changes that phase's questions or evidence; reuse what is already loaded. Five independent axes are outcome, failure mechanism, actual technical semantics, evolution and evidence method. No requirement to fill every axis, read every card or assign a reviewer per lens. Mode names do not have their own copies of knowledge.
 
-Consider the applicable assurance perspectives: intended behavior/scope; implementation integrity; test trust; architecture drift; security/reliability/performance; and, when indicated, effectiveness of the development process. These are a scope scan, not mandatory full audits. The [index](knowledge/index.md) points to canonical mechanism cards. For SFD, the process-effectiveness lens examines **SFD execution and its evidence**, not an imaginary SFD code-audit stage. Do not re-run completed feature work to manufacture telemetry.
+Consider the applicable assurance perspectives: intended behavior/scope; implementation integrity; documentation integrity; test trust; architecture drift; security/reliability/performance; and, when indicated, effectiveness of the development process. These are a scope scan, not mandatory full audits. The [index](knowledge/index.md) points to canonical mechanism cards. For SFD, the process-effectiveness lens examines **SFD execution and its evidence**, not an imaginary SFD code-audit stage. Do not re-run completed feature work to manufacture telemetry.
+
+Treat relied-on documentation as an audited output, not just input evidence: README/help, API/configuration references, examples, operational guides and agent instructions can fail their consumers even when code/tests pass. Use [documentation integrity](knowledge/mechanisms/documentation-integrity.md) to select consequential claims and missing guidance in both directions (docs → behavior and supported behavior → docs). Include unchanged but affected guidance; do not turn this into exhaustive copyediting.
 
 For each priority question identify the expected invariant and authority, plausible reachable failure, owner/consumer, a distinguishing observation and a counterexample. Record selected knowledge and reason in that question's existing paragraph, not a routing receipt. Use [local fallback](knowledge/fallback.md) where the library is missing or misleading. A missing card never restricts scope. Look up primary documentation only for unfamiliar, disputed or version-sensitive semantics. Re-route if the actual boundary changes.
 

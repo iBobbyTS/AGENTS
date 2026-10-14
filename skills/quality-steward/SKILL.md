@@ -21,7 +21,7 @@ Check identity, ancestry, dirty state, completeness and observation stability be
 
 ## 2. Make one bounded triage decision
 
-Look for changed trust/state/consumer boundaries, repeated repair or escaped-defect patterns, test-system changes, known due risk decisions, a completed capability, or a neglected critical area. Path and commit-word heuristics are leads, never proof. Use one small targeted source/configuration look when needed to disambiguate a material signal. Stop if the next step would be a real audit.
+Look for changed trust/state/consumer boundaries, repeated repair or escaped-defect patterns, test-system changes, known due risk decisions, a completed capability, or a neglected critical area. Documentation-only changes are not automatically low risk: changed install/recovery commands, compatibility promises or agent instructions can change real consumer behavior. Use general-audit's [documentation integrity](../general-audit/knowledge/mechanisms/documentation-integrity.md) only when that signal needs investigation; harmless copyediting alone does not require an audit. Path and commit-word heuristics are leads, never proof. Use one small targeted source/configuration look when needed to disambiguate a material signal. Stop if the next step would be a real audit.
 
 Return one of:
 - **NO_ACTION**: no new worthwhile action supported by the available, sufficiently complete triage evidence. Not a health certificate.
