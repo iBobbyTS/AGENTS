@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-if [ "${CODEX_MAINTAINABILITY_AUDIT_REMINDER:-1}" = "0" ]; then
+if [ "${AGENT_MAINTAINABILITY_AUDIT_REMINDER:-1}" = "0" ]; then
   exit 0
 fi
 
@@ -10,9 +10,9 @@ if [ -z "$repo_root" ]; then
   exit 0
 fi
 
-threshold=$(git -C "$repo_root" config --local --get codex.maintainabilityAuditInterval 2>/dev/null || true)
+threshold=$(git -C "$repo_root" config --local --get agent.maintainabilityAuditInterval 2>/dev/null || true)
 if [ -z "$threshold" ]; then
-  threshold=$(git -C "$repo_root" config --global --get codex.maintainabilityAuditInterval 2>/dev/null || true)
+  threshold=$(git -C "$repo_root" config --global --get agent.maintainabilityAuditInterval 2>/dev/null || true)
 fi
 
 case "$threshold" in
@@ -37,7 +37,7 @@ if [ -n "$marker_commit" ] && git -C "$repo_root" merge-base --is-ancestor "$mar
   best_distance=$(git -C "$repo_root" rev-list --count "${marker_commit}..HEAD" 2>/dev/null || true)
 fi
 
-baseline_commit=$(git -C "$repo_root" config --local --get codex.maintainabilityAuditBaseline 2>/dev/null || true)
+baseline_commit=$(git -C "$repo_root" config --local --get agent.maintainabilityAuditBaseline 2>/dev/null || true)
 if [ -n "$baseline_commit" ] &&
   git -C "$repo_root" cat-file -e "${baseline_commit}^{commit}" 2>/dev/null &&
   git -C "$repo_root" merge-base --is-ancestor "$baseline_commit" HEAD 2>/dev/null; then
@@ -59,11 +59,16 @@ case "$best_distance" in
     ;;
 esac
 
+# 距上次审计不足 90 次提交时保持安静，避免刚打完审计标记就开始倒数提示。
+if [ "$best_distance" -lt 90 ]; then
+  exit 0
+fi
+
 if [ "$best_distance" -lt "$threshold" ]; then
   remaining=$((threshold - best_distance))
-  printf '[codex] 建议%s次后进行项目审计。\n' "$remaining" >&2
+  printf '[agent] 建议%s次后进行项目审计。\n' "$remaining" >&2
 else
-  printf '[codex] 上次审计是%s次前，建议尽快安排审计。\n' "$best_distance" >&2
+  printf '[agent] 上次审计是%s次前，建议尽快安排审计。\n' "$best_distance" >&2
 fi
 
 exit 0

@@ -40,4 +40,4 @@ python3 scripts/install.py --target codex --apply --replace
 - “用 general-audit 做一次 routine 审计。”
 - “准备交付此候选，用 deployment-preflight 检查，不部署。”
 
-安装不会登记仓库、运行扫描、安装定时器、修改 hook 或授权审计/部署。模型、调度与登记文件要求见 [QC 宿主配置](QUALITY-HOST-CONFIG.zh-CN.md)，该文档不复制进宿主技能目录。现有 Git 提醒仍按 [Git hook 文档](../git-hook.md) 单独选择启用。
+安装不会登记仓库、运行扫描、安装定时器、修改 hook 或授权审计/部署。模型、调度与登记文件要求见 [QC 宿主配置](QUALITY-HOST-CONFIG.zh-CN.md)，该文档不复制进宿主技能目录。现有 Git 提醒仍按 [Git hook 文档](git-hook.md) 单独选择启用。

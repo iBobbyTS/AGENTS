@@ -33,7 +33,7 @@
 
 ### Git Hook
 
-Hook 脚本已随仓库提供；clone 后在仓库根目录执行 `./scripts/install-git-hooks.sh` 即可为当前仓库启用。[git-hook.md](git-hook.md) 说明配置与验证方式。
+Hook 脚本已随仓库提供；clone 后在仓库根目录执行 `./scripts/install-git-hooks.sh` 即可为当前仓库启用。[git-hook.md](docs/git-hook.md) 说明配置与验证方式。
 - 每次审计完成时提交消息带上 `Maintenance-Audit: true` （用 [ai-aware-code-audit](skills/ai-aware-code-audit/) 时会自动带上）。
 - 提醒脚本位于 `.githooks/`，不依赖用户目录中的绝对路径。
 - 使用 [init-codex-project](skills/init-codex-project/) 初始化项目时定好这个项目多久审计一次。

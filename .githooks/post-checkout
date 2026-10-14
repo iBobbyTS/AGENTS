@@ -3,4 +3,4 @@ if [ "${3:-}" = "0" ]; then
   exit 0
 fi
 
-exec "$(dirname "$0")/codex-maintainability-audit-reminder"
+exec "$(dirname "$0")/agent-maintainability-audit-reminder"

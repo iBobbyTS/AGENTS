@@ -1,2 +1,2 @@
 #!/bin/sh
-exec "$(dirname "$0")/codex-maintainability-audit-reminder"
+exec "$(dirname "$0")/agent-maintainability-audit-reminder"
