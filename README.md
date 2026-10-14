@@ -1,117 +1,108 @@
 # AGENTS.md
 个人使用的Coding Agent约束，作为备份和分享。<br>
-本README纯手打，无AI，仓库内其余文件基本 100%AI。
+本README纯手打，无AI，仓库内其余文件基本 100%AI。英文版为GPT 6.1 Sol翻译。
 
 ## 目录
 
 - [AGENTS.md](#agentsmd文件)
 - [Git Hook](#git-hook)
 - [Skills](#skills)
-    - [code-audit](#code-audit): 定期项目审计
-    - [code-review](#code-review): 一次功能修改后的代码审核
-    - [debug-notes-to-engineering-notes](#debug-notes-to-engineering-notes): 仅在官方文档不全/有误时才使用，结合[second-pass-debugging](#second-pass-debugging)，燃烧自己的token，为后人照亮debug之路
+    ### Sectioned Feature Development
+    - [grill-me](#grill-me): 先挖掘需求，不问产品架构。
+    - [sectioned-feature-development](#sectioned-feature-development): 分块开发大功能，含planning知识库。
+    - [code-review](#code-review): 一次功能修改后的代码审核。
+    ### Quality Control
+    - [quality-steward](#quality-steward): 是否对目标项目启动审计的检测，建议自动化定期运行。
+    - [general-audit](#general-audit): 定期项目审计，含审计知识库。
+    - [deployment-preflight](#deployment-preflight): 部署前检查。
+    ### Debug
+    - [adaptive-debugging](#adaptive-debugging): 第一次修复失败后走这个流程，包含debug知识库。
+    - [debug-notes-to-engineering-notes](#debug-notes-to-engineering-notes): 仅在官方文档不全/有误时才使用，结合[adaptive-debugging](#adaptive-debugging)，燃烧自己的token，为后人照亮debug之路。
+    ### 其它工具
     - [feishu-message-sender](#feishu-message-sender): 飞书自定义机器人在长任务里定时汇报
-    - [init-codex-project](#init-codex-project): 初始化项目
-    - [manual-brainstorming](#manual-brainstorming): 手动触发的brainstorming
-    - [manual-git-worktrees](#manual-git-worktrees): 手动分出git worktree实现功能
-    - [second-pass-debugging](#second-pass-debugging): 第一次修复失败后走这个流程
 
-### AGENTS.md文件
-[AGENTS.md](AGENTS.md) 是 Codex 默认读取的约束名，所以把它作为本仓库的名字。Codex 设计总共有2层 `AGENTS.md`，一个在 `~/.codex/AGENTS.md`，另一个在项目的根目录里。
 
-> 注：GUI 里 Settings - Personalization - Custom instructions 指向的就是 `~/.codex/AGENTS.md`
+## AGENTS.md文件
+[AGENTS.md](AGENTS.md) 是 Codex, Zcode 等 agent 默认读取的约束名，总共有2层 `AGENTS.md`，一个在 `~/.codex/AGENTS.md`，另一个在项目的根目录里。
+
 
 主要职责：
-- 语言：回复、Implementation Plan都用中文。
-- Skills：通过 `.agents/skills/` 判断用户是否初始化过这个项目，没有的话通过 [$init-codex-project](skills/init-codex-project) 进行初始化。
-    - `.agents/skills/` 是当前项目运行时常用的最佳实践，如果发现有更好的方法，Agent应该主动更新。
-- 测试：除了修改文档、修改UI字符串之类的，其他逻辑修改都需要做单元测试；测试必须执行；测试不得用无意义断言。
-- 代码安全：未经要求不回滚Agent不了解的修改；破坏性操作前先 dry run；不主动commit, push。
-- Implementation Plan：批准后写入 `.agent-work/PLAN.md`，执行完成后重命名为 `PLAN.md.done`，上下文压缩后重新读取。目前Codex没有显式的逻辑证明它会保存Implementation Plan，上下文压缩后会重新读取，所以需要有这条规则。
-- 可维护性（重要）：主要是用来避免上帝对象、超大文件等问题。小功能执行完后汇报可维护性，是否增加了复杂度；大功能执行前先判断是否需要进行Class, Function的职责拆分。
-- Docker：主要是我本地用的是`colima`而非 Docker Desktop，agent经常去尝试`docker compose`浪费token。colima比较轻量，不会像 Dokcer Desktop 那样一下占1-2G的内存。
 
-### Git Hook
+【待填写】
+
+## Git Hook
 
 Hook 脚本已随仓库提供；clone 后在仓库根目录执行 `./scripts/install-git-hooks.sh` 即可为当前仓库启用。[git-hook.md](docs/git-hook.md) 说明配置与验证方式。
-- 每次审计完成时提交消息带上 `Maintenance-Audit: true` （用 [ai-aware-code-audit](skills/ai-aware-code-audit/) 时会自动带上）。
+- 每次审计完成时提交消息带上 `Maintenance-Audit: true`。
 - 提醒脚本位于 `.githooks/`，不依赖用户目录中的绝对路径。
-- 使用 [init-codex-project](skills/init-codex-project/) 初始化项目时定好这个项目多久审计一次。
 - 每次提交时Git会提醒下次审计什么时候或已经超过了设定间隔。
 
-### Skills
+## Skills
 
-#### [code-audit](skills/code-audit/)
+### Sectioned Feature Development
 
-`GPT 5.6 Sol Pro` 上网调研并制定的审计方式，参考资料在[RESEARCH](RESEARCH/)里。包含了传统审计面和AI编程时代可能造成的问题。运行时会在 `.agent-work/audit/` 下创建文件夹，放临时文件 `FULL.md` 来对对抗上下文压缩，最终结果在 `REPORT.md`。
-
-#### [code-review](skills/code-audit/)
-
-`Codex` 自己上网找的审查方式，参考资料在[RESEARCH](RESEARCH/)里。包含了传统审计面和AI编程时代可能造成的问题。运行时会在 `.agent-work/review/` 下创建文件夹，放临时文件 `FULL.md` 来对对抗上下文压缩，最终结果在 `REPORT.md`。<br>
-有三种审查规模和一个external review的add-on。
-
-#### [debug-notes-to-engineering-notes](skills/debug-notes-to-engineering-notes)
-
-使用[second-pass-debugging](#second-pass-debugging)修完问题后把 `.agent-work/debug` 里的记录沉淀到 `docs/engineering-notes`，方便后续开发和其他人阅读。会记录正确做法、错误尝试记录、和官方文档不符的部分、版本记录。不包含项目/实现约定。
-
-#### [feishu-message-sender](skills/feishu-message-sender)
-
-建议长任务时使用，不要让agent在前台轮询。使用这个skill它会复制一份模板脚本，然后编辑脚本并后台启动，用你的飞书机器人发送一条任务开始通知、每小时的进度汇报、任务结束总结。<br>
-机器人配置放在 `~/.config/feishu-message-sender/secret.json`，格式为`{"webhook":"https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxx","secret":"签名秘钥","name":"本电脑的名字"}`。<br>
-飞书官方：[自定义机器人使用指南](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot?lang=zh-CN)（给agent看的话用[md版本](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot.md)）
-
-#### [init-codex-project](skills/init-codex-project/)
-
-初始化项目，根据项目采用的技术栈，创建项目级 AGENTS.md 文件，定下：
-- 运行时的命令，防止每次都试。
-- git提交语言、UI语言
-- ...... (它按我的要求自动创建完我还没审查)
-
+#### [grill-me](skills/grill-me)
+用户需要可以描述清楚自己的需求，Agent用这个skill只问用户没描述清的部分，不问架构/代码层面的问题。
+> This skill is an independently rewritten, requirements-focused adaptation inspired by Matt Pocock's `grill-me` / `grilling` skills from https://github.com/mattpocock/skills. The upstream project is licensed under the MIT License. Upstream copyright: Copyright (c) 2026 Matt Pocock
 #### [sectioned-feature-development](skills/sectioned-feature-development/)
 
 对于大功能，必须先制定完整计划，再分section实现，大致流程如下：
 
 ```c
 skill sectioned_feature_development() {
-    使用 sol_max 创建完整计划;
-    for section in section数量 {
+    主 Agent 创建完整计划，拆分section/subsection，决定对应的模型;
+    GPT 6 Astra (Xhigh) 执行 Plan Review;
+    for section in sections {
         拆分section到单独的文件;
-        使用sol medium实现section;
+        switch (section定义) {
+            case impl_std:
+                DeepSeek V4.1 Flash (high) 实现;
+            case value2:
+                GPT 6.1 Sol (high) 实现;
+        }
         while true {  // Code review循环
-            调用 sol_xhigh 使用 $code-review 进行审查;
-            if >5轮都发现了问题 {
-                if 当前已经递归拆分了>5轮 {
-                    要求用户选择继续拆分还是重新设计PLAN-FULL;
-                    return;
-                }
-                把当前代码备份到codex/backup/xxx;
-                撤销工作区所有修改;
-                使用 sol_max 拆分当前section;
-                break;  // 继续implementation循环
-            }
-            if 本轮和上一轮都没有发现问题 {
-                break;
-            }
-            if 发现问题 {
-                使用 sol_high 修复;
+            调用 GLM 5.3 使用 $code-review 进行审查;
+            没问题后用 GPT 6.1 Sol 再审查;
+            if 循环次数 > 5 {
+                打包advisor_pack给GPT 6 Astra Pro裁决;
             }
         }
     }
 }
 ```
 
-#### [grill-me](skills/grill-me)
-用户需要可以描述清楚自己的需求，Agent用这个skill只问用户没描述清的部分，不问架构/代码层面的问题。
-> This skill is an independently rewritten, requirements-focused adaptation inspired by Matt Pocock's `grill-me` / `grilling` skills from https://github.com/mattpocock/skills. The upstream project is licensed under the MIT License. Upstream copyright: Copyright (c) 2026 Matt Pocock
+#### [code-review](skills/code-review/)
 
+GPT 5.6 Sol Pro 自己写的，我没有看过具体内容，实战下来挺好用的。
 
-> 注：下面3个skill都是根据[Superpowers](https://github.com/obra/superpowers) [v5.1.0](https://github.com/obra/superpowers/releases/tag/v5.1.0)  做的 “Codex-native” 版本。没有照搬 Superpowers 是因为它的约束过重，对于Codex这样的高级智能体会浪费过多token，所以修改后的都是手动/条件触发，不是默认触发。
+### Quality Control
 
-#### [manual-git-worktree](skills/manual-git-worktree/)
+#### [quality-steward](skills/quality-steward)
+适合自动化运行，配置好需要审查的仓库，每次agent启动时自动在这些仓库看提交需不需要审计。建议给Flash级别模型去做，不需要太强推理能力。
 
-根据 `using-git-worktrees` 修改而来，只有用户主动触发才会走git worktree开发。
+#### [general-audit](skills/general-audit/)
 
-#### [second-pass-debugging](skills/second-pass-debugging/)
-根据 `systematic-debugging` 修改而来。只有bug第一次修复失败才会触发。<br>
-先做“证据盘点”，包括上一轮改了什么、为什么没解决、现在的失败现象是什么、有没有可运行复现。然后再进原 `systematic-debugging` 的流程。<br>
+`GPT 6 Astra Pro` 上网调研并制定的审计方式。包含大部分审计面。
+
+#### [deployment-preflight](skills/deployment-preflight)
+
+检查部署安全，数据库会不会丢数据等。
+
+### Debug
+
+#### [adaptive-debugging](skills/adaptive-debugging/)
+包含Debug知识库。
+先做“证据盘点”，包括上一轮改了什么、为什么没解决、现在的失败现象是什么、有没有可运行复现。然后再进原 
 新增流程：把试错过程记录在`.agent-work/debug`下，避免疑难杂症经历过多次上下文压缩后忘记之前试过的错误路径。
+
+#### [debug-notes-to-engineering-notes](skills/debug-notes-to-engineering-notes)
+
+使用[adaptive-debugging](#adaptive-debugging)修完问题后把 `.agent-work/debug` 里的记录沉淀到 `docs/engineering-notes`，方便后续开发和其他人阅读。会记录正确做法、错误尝试记录、和官方文档不符的部分、版本记录。不包含项目/实现约定。
+
+### 其它工具
+
+#### [feishu-message-sender](skills/feishu-message-sender)
+
+建议长任务时使用，不要让agent在前台轮询。使用这个skill它会复制一份模板脚本，然后编辑脚本并后台启动，用你的飞书机器人发送一条任务开始通知、每小时的进度汇报、任务结束总结。<br>
+机器人配置放在 `~/.config/feishu-message-sender/secret.json`，格式为`{"webhook":"https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxx","secret":"签名秘钥","name":"本电脑的名字"}`。<br>
+飞书官方：[自定义机器人使用指南](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot?lang=zh-CN)（给agent看的话用[md版本](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot.md)）
