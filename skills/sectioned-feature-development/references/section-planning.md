@@ -1,341 +1,332 @@
-# Section Planning Guide
-
-Use this guide to turn one large feature into reviewable sections without losing feature-level coherence.
+# Section Planning
 
 ## Contents
 
-1. [Plan around behavior and invariants](#1-plan-around-behavior-and-invariants)
-2. [Preferred section types](#2-preferred-section-types)
-3. [Section quality test](#3-section-quality-test)
-4. [Size heuristics](#4-size-heuristics)
-5. [Dependency graph](#5-dependency-graph)
-6. [Requirement coverage matrix](#6-requirement-coverage-matrix)
-7. [Planning cross-section contracts](#7-planning-cross-section-contracts)
-8. [Parallelization decision](#8-parallelization-decision)
-9. [Hard-cap re-decomposition](#9-hard-cap-re-decomposition)
-10. [Common anti-patterns](#10-common-anti-patterns)
-11. [Example decomposition](#11-example-decomposition)
+1. [Purpose](#purpose)
+2. [Choose the first slice](#choose-the-first-slice)
+3. [A valid section](#a-valid-section)
+4. [Structural allowance](#structural-allowance)
+5. [Boundaries and deferred work](#boundaries-and-deferred-work)
+6. [Invalid section patterns](#invalid-section-patterns)
+7. [Plan-review gate](#plan-review-gate)
+8. [Triggered plan-review lenses](#triggered-plan-review-lenses)
+9. [Examples](#examples)
+10. [Composable knowledge](#composable-knowledge)
 
-## 1. Plan around behavior and invariants
+## Purpose
 
-A useful section is not merely a group of files. It is a bounded change in system behavior with a known owner, explicit dependencies, and a testable completion condition.
+Sectioning reduces cognitive and integration risk only when each section represents one coherent behavior increment. Splitting by directory, layer, or evidence artifact can make the plan longer without making the change safer.
 
-Start from four maps:
+For a qualifying multi-session program only, use [long-horizon planning](long-horizon.md) to separate the complete roadmap from the small working horizon. A milestone spanning several independently failing production state machines is not one bounded section; a high section count alone does not prove reviewability. This adds no ordinary-task phase.
 
-1. **Outcome map** — user, operator, API consumer, or background-system outcomes.
-2. **Invariant map** — truths that must hold across every intermediate and final state.
-3. **ownership map** — modules or services that own state, decisions, and side effects.
-4. **dependency map** — contracts that must exist before another section can proceed.
+The plan should answer:
 
-Do not begin by assigning one section to frontend, one to backend, and one to tests. That creates horizontal partial work whose correctness cannot be observed until late integration.
+- What did the user actually request, in their own words?
+- Which explicit examples, failing cases, counterexamples, or later corrections constrain that request?
+- What is the smallest end-to-end behavior that satisfies the current, non-superseded request?
+- What observable behavior becomes true after this section?
+- Which external authority makes this section necessary, and why is a smaller existing path insufficient?
+- Which existing owner is responsible?
+- What exact code and semantic impact cone may change?
+- Which behavior is deliberately not part of this section?
+- What evidence is sufficient to accept it?
 
-## 2. Preferred section types
+## Composable knowledge
 
-### 2.1 Walking skeleton
+Before drafting section boundaries, read [planning/router.md](planning/router.md) once and select knowledge for the changed path. Consult [planning/index.md](planning/index.md) only for uncertain dimensions; read the matching specialized guides needed to resolve the actual boundary. Use universal only for a named uncovered part after index consultation and matched-guide reading; do not substitute universal for an available relevant guide. This is the existing PLAN phase, not an extra review, pass, script or user approval.
 
-Use a walking skeleton when the architecture, deployment route, data flow, or integration path is uncertain. Implement the thinnest end-to-end path that proves the major components can communicate and that the validation environment can observe the result.
+Record the four-axis assessment, paths actually read, short evidence-based reasons and any named universal fallback in the existing PLAN routing paragraph. Resolve overlapping advice into one boundary/example and one check. The independent PLAN reviewer checks the recorded route against source, consulting the planning index only for a material unresolved match; the author's selection list is evidence, not the entire available library. Do not supply the author's prior conversation or another reviewer's verdict. A missing route name or unselected irrelevant checklist item never blocks; a concrete failure needs existing authority.
 
-A walking skeleton should:
+For producer/consumer work, use [boundary-handoff](planning/boundary-handoff.md): original example -> actual request serialization -> owner/state -> response -> actual named consumers. Label source-inspected, observed, planned and unknown evidence. PLAN can specify a future test and its create-before-run owner; it need not execute unfinished code. Handoff replaces planned samples with actual producer evidence; consumers must use the same real shape.
 
-- Exercise real entry and exit points.
-- Use the intended ownership and dependency direction.
-- Include a minimal test or demo path.
-- Avoid premature breadth and polish.
-- Produce information that can change later section design.
+If a user-named downstream reader needs changes, give it an edit owner now, not only inspect permission or a late cleanup section. If unchanged, explain the source/check proving preservation. Do not split one invariant just to match library files or model names. Reuse the existing parent/subsection, assurance, scope and finite review policies below.
 
-It is not a throwaway prototype unless the plan explicitly says so.
+## Choose the first slice
 
-### 2.2 Vertical behavior slice
-
-This is the default. A vertical section implements one coherent outcome across only the layers required to make it real and testable.
+When an external seam or architecture assumption is uncertain, begin with the smallest real probe or walking skeleton that can falsify the assumption. Authentication method, endpoint, response shape, protocol, or third-party semantics are not stable plan inputs unless repository source/docs make them authoritative.
 
 Examples:
 
-- Register one account type end to end, including validation, persistence, API, UI state, and tests.
-- Support one new export format from request through generated artifact and download behavior.
-- Add one permission-controlled action, including policy evaluation, UI affordance, audit record, and denial tests.
+- Observe the actual request metadata shape before building a registry around it.
+- Exercise one canonical provider call before creating a general provider framework.
+- Modify one representative route and reload flow before building a whole-repository URL analyzer.
+- Prove the current persistence owner and failure behavior before introducing an outbox or journal.
 
-A vertical section may touch several modules. Reviewability comes from one behavior and one contract, not from a low file count alone.
+A probe should produce durable knowledge or a minimal production path. It should not become a second framework.
 
-### 2.3 Enabling refactor
+## A valid section
 
-Use only when later behavior cannot be added safely without a seam, stable owner, or characterization coverage.
+A section should normally have:
 
-An enabling refactor must:
+- one primary behavior owner;
+- one coherent outcome;
+- one authority anchor outside the plan itself and a necessity statement tied to the minimum feature outcome;
+- one bounded changed contract;
+- one frozen scope manifest separating allowed-to-edit owners from inspect-only dependency paths and explicit exclusions;
+- one direct semantic impact cone;
+- one review intensity (`MECHANICAL`, `BOUNDED`, or `HIGH_RISK`);
+- fixed two-clean-round acceptance with the embedded profile's reviewer routes;
+- one set of targeted tests;
+- no undocumented dependency on a future section for correctness.
 
-- Preserve observable behavior.
-- Have protective tests before or within the same section.
-- Establish a specific boundary required by named later sections.
-- Avoid broad cleanup, renaming, or abstraction unrelated to the feature.
-- Be independently reversible.
+Section IDs are handles for `.agent-work/` plan, packet and ledger files only. Repository artifacts — file and directory names, tests, fixtures, docs, configuration, identifiers, UI strings, code comments — are named after the feature or behavior they own (`tests/runtime-selection.test.mjs`, `docs/gap-handoff.md`), never after a section ID or any other SFD process label; when a repository artifact name would otherwise collide or be too generic, record a feature slug in the plan and use that.
 
-Separate large moves/renames from semantic changes so reviewers can distinguish structure from behavior.
+Branch names and commit messages on delivered history follow the same rule: the feature branch and each commit message are named after the feature or behavior they carry, never after a section ID or any other SFD process label — including commits serialized from parallel worktrees. The short-lived parallel worktree branches and directories [parallel-execution.md](parallel-execution.md) prescribes are process infrastructure, not delivered artifacts, and keep their section-based names.
 
-### 2.4 Expand–migrate–contract
+A section may touch multiple files and layers when those edits are required for one vertical behavior. File count alone does not define reviewability.
 
-Use for incompatible APIs, schemas, event formats, state representations, or shared interfaces.
+The section graph is not allowed to create its own requirements. A downstream section cannot be justified only because an upstream plan promised a new UI, proof harness, compatibility layer, status surface, or generalized mechanism. Trace it back to user intent, a current repository/production obligation, or a demonstrated correctness dependency; otherwise remove it from the feature.
 
-- **Expand:** add a backward-compatible new path while retaining the old path.
-- **Migrate:** move consumers, data, or traffic incrementally; observe both paths.
-- **Contract:** remove the old path only after evidence proves migration is complete.
+Prefer sections such as:
 
-Give each phase its own section or small cluster. Record the exit condition for the contract phase before starting expansion, or the temporary dual-path state may become permanent.
+- “Parse and normalize the quota signal at the existing API boundary.”
+- “Keep one turn bound to its selected account until a confirmed quota terminal signal.”
+- “Remove report month/year from the page URL while preserving reload defaults.”
+- “Expose DeepSeek's single-query capability through the existing provider projection.”
 
-### 2.5 Branch by abstraction
+Avoid sections such as:
 
-Use when replacing a large implementation behind a stable seam.
+- “Backend changes.”
+- “Security hardening.”
+- “Build a generalized URL governance system.”
+- “Rehabilitate review evidence.”
+- “Final cleanup and everything else.”
 
-Typical section sequence:
+## Structural allowance
 
-1. Introduce or verify an abstraction with no behavioral change.
-2. Route the current implementation through it.
-3. Add the new implementation behind the same contract.
-4. Migrate selected callers or traffic.
-5. Make the new implementation authoritative.
-6. Remove the old implementation and temporary seam when appropriate.
+Every section contract includes an **Allowed structural changes** list. This is an authorization boundary, not a prediction.
 
-Do not introduce an abstraction merely to make the plan look incremental. It must narrow a real semantic boundary.
+List only mechanisms required by the approved behavior, for example:
 
-### 2.6 Feature-flagged slice
+```text
+- Extend the existing AccountRegistry with one per-turn affinity map.
+- Add one provider capability enum value and reuse the existing projection path.
+- Add explicit route-level regression tests in the existing test module.
+```
 
-Use a release flag when incomplete behavior must coexist with a deployable branch or when rollout needs controlled exposure.
+When the list is empty, the implementer may make local edits and small local helpers inside the allowed-to-edit manifest but may not add a new service, registry, persistence layer, background worker, parser framework, global analyzer, CI policy, public config surface, or security subsystem.
 
-Every flag needs:
+A reviewer cannot add an item to this list or expand the allowed-to-edit manifest. It may inspect an unlisted dependency only through a recorded causal chain from changed code. A required new mechanism or repair owner is either:
 
-- Owner.
-- Default state and safe legacy behavior.
-- Scope or cohort semantics.
-- Test matrix for relevant on/off states.
-- Rollout and rollback method.
-- Expiry or removal section.
+- already implied by an authoritative repository contract and accepted by the main agent; or
+- a product/architecture decision for the owner.
 
-Do not use flags to hide broken intermediate states from tests.
+## Boundaries and deferred work
 
-## 3. Section quality test
+Write non-goals as concrete exclusions, not generic “out of scope” prose.
 
-A proposed section is acceptable only when all applicable questions have good answers.
+Good examples:
 
-### Coherence
+- No multi-process durability or restart persistence.
+- No replay after downstream bytes have been emitted.
+- No same-UID hostile process model.
+- No whole-repository source analyzer or permanent CI prohibition.
+- No public Admin DTO exposure until S04.
 
-- Does the section change one related behavior or establish one necessary seam?
-- Can its purpose be stated without “and then also” clauses?
-- Are refactor, generated churn, formatting, and behavior disentangled?
+Deferred work must have a named later owner and a correct intermediate state. A reviewer may block on deferred work only when the current state is already incorrect or unsafe before the later section runs.
 
-### Independence
+## Invalid section patterns
 
-- Are all predecessors explicit?
-- Can the section be implemented without guessing future contracts?
-- Can it be reverted without reverting unrelated sections?
+### Process-only section
 
-### Testability
+Do not create a section only to:
 
-- Is there a deterministic oracle for completion?
-- Can the critical path be exercised before future sections exist?
-- Are negative, boundary, and failure cases named?
+- move a test earlier in Git ancestry;
+- obtain a “clean lineage”;
+- re-prove accepted predecessor behavior unchanged by product code.
 
-### Reviewability
+### Governance expansion
 
-- Can a reviewer understand the intent from the contract and diff?
-- Is the impact cone bounded enough for one review session?
-- Are generated files, lockfiles, migrations, or mechanical edits separated or clearly labeled?
+A local feature does not automatically authorize a repository-wide analyzer, policy, registry, or CI guard. Prefer explicit regression tests for the changed routes/owners.
 
-### Integrability
+### Threat-model expansion
 
-- Does the repository remain buildable and operational after the section?
-- Are temporary compatibility states explicit and safe?
-- Is the next consumer of this section named?
+A test harness, local script, single-user tool, or private directory does not automatically require protection against arbitrary in-process objects, same-UID hostile processes, multi-tenant access, or malicious filesystem rebinding.
 
-### Feature coherence
+### Layer-only split
 
-- Which feature-level acceptance criteria does the section advance?
-- Which global invariants does it touch?
-- What remains deliberately deferred?
+Splitting “models,” “services,” and “UI” into separate sections may leave each section semantically incomplete. Prefer a vertical behavior slice unless compatibility staging requires a layer boundary.
 
-## 4. Size heuristics
+## Plan-review gate
 
-Do not use line count as the sole splitter. Use it as a warning signal together with semantic breadth.
+Run one fresh, read-only plan review after `PLAN-FULL.md` passes mechanical validation and before product-code implementation. Its purpose is to catch the wrong plan at lower cost, not to add another design committee.
 
-A normal section should usually satisfy these heuristics:
+### Requirement/example traceability
 
-- One primary behavior or seam.
-- One implementer session and one reviewer session.
-- A small number of semantic owners.
-- Roughly 100–400 behavioral lines when practical, excluding generated files, snapshots, lockfiles, and pure moves.
-- No more than one high-risk semantic boundary unless the boundaries are inseparable.
+Before review, build a compact matrix:
 
-Split again when:
-
-- The section needs multiple independent acceptance oracles.
-- Its contract contains several unrelated outcomes.
-- It changes both a provider contract and many consumers without a compatibility phase.
-- It mixes data migration, runtime cutover, and old-path removal.
-- Review requires repeatedly switching between unrelated workflows.
-- The implementation cannot be left in a valid intermediate state.
-- The repair impact cone would approximate the whole feature.
-
-Do not split so finely that a new API or abstraction has no real usage. A section must remain understandable as a working increment.
-
-## 5. Dependency graph
-
-Represent dependencies explicitly in `PLAN-FULL.md`.
-
-Use these edge types:
-
-- `requires`: implementation cannot begin until predecessor is accepted.
-- `integrates-with`: sections can be built independently but need a checkpoint together.
-- `migrates-from`: consumer or data migration depends on an expanded compatible path.
-- `contracts`: cleanup removes a temporary path after all migrations prove complete.
-- `conflicts-with`: sections cannot run in parallel because they modify the same semantic owner.
-
-The graph must be acyclic. If two sections require each other, the boundary is wrong or a walking skeleton/common contract section is missing.
-
-## 6. Requirement coverage matrix
-
-Map every full-feature criterion to implementation and verification.
-
-```markdown
-| Requirement | Primary section(s) | Section oracle | Integration oracle | Status |
+| ID | Current instruction/example/correction | Supersedes | Acceptance criterion | Test or probe |
 |---|---|---|---|---|
-| R-01 | S01, S03 | targeted test | end-to-end flow | planned |
-| R-02 | S02 | schema test | migration rehearsal | planned |
-```
 
-No requirement may be covered only by “final testing.” That usually means the section design has no local oracle.
+Every named real-world failure and expected counterexample must be represented. If the user corrects an earlier implementation direction, mark the old one `SUPERSEDED`; it cannot remain an alternative requirement. This is especially important for bug reports where a generic contract can pass while the reported fixture still fails.
 
-Also map non-functional requirements:
+### Review packet
 
-- Security and authorization.
-- Privacy and data retention.
-- Concurrency and ordering.
-- Reliability, retry, and idempotency.
-- Performance and cost ceilings.
-- Observability and operational control.
-- Accessibility and UX states.
-- Migration, rollout, rollback, and recovery.
+Use [PLAN-REVIEW-REQUEST.template.md](../assets/PLAN-REVIEW-REQUEST.template.md). Provide only:
 
-## 7. Planning cross-section contracts
+- original user request, later explicit owner decisions, and the requirement/example matrix;
+- minimum sufficient end-to-end outcome and authority map;
+- repository rules/current production contracts;
+- relevant source/architecture seams needed to verify buildability;
+- PLAN-FULL and explicit exclusions;
+- validation tiers and any unresolved external assumptions;
+- selected planning reference paths/reasons, the shared boundary examples and named consumer ownership (no additional routing report).
 
-For every producer-consumer relationship, record:
+Do not prime the reviewer with a desired verdict or proposed additional architecture.
 
-- Authoritative owner.
-- Data or control contract.
-- Version or compatibility state.
-- Error and fallback semantics.
-- Ordering and idempotency assumptions.
-- Security/permission context propagated.
-- Test that proves the contract at the producer.
-- Test that proves it at the consumer.
-- Integration checkpoint that proves the combined path.
+### Permitted checks
 
-Do not rely on “both sections use the same type” as proof when runtime serialization, persistence, permissions, or deployment boundaries exist.
+Review in this order; do not spend time making an unnecessary mechanism internally perfect:
 
-## 8. Parallelization decision
+1. **Necessity:** for every new marker, migration representation, backup/rollback contract, registry, shared abstraction, proof harness, analyzer, or validation obligation, first prove it is required by external authority or unavoidable correctness. Otherwise classify the whole item `PLAN_SCOPE_EXPANSION` and do not generate secondary blockers about its edge cases.
+2. **Traceability:** every current requirement/example/correction maps to acceptance evidence, and every behavior/section/UI/config/compatibility surface maps to authority.
+3. **Minimum closure:** the plan solves the full user-visible request without optional completeness work.
+4. **Buildability:** owners/seams exist, dependencies are acyclic, predecessors produce what consumers need, and uncertain external seams are probed before architecture depends on them.
+5. **Ownership coherence:** the plan does not duplicate one semantic rule across owners or stack local guards around a shared defect without an explicit foundational-vs-local owner decision.
+6. **Scope proportionality:** no process/evidence-only section, generalized hardening, future-proofing, or proof system; validation is tiered rather than broad-suite-per-edit.
+7. **Contract integrity:** section boundaries preserve correct intermediate states and do not hide cross-section API/schema/state mismatches.
+8. **Review proportionality:** two clean rounds are fixed; actual semantic risk determines breadth. The embedded dispatch profile supplies the reviewer routes. Do not add review rounds from module labels, repository size or test count.
 
-Parallel work is an optimization, not the default.
+Within these checks, verify that a selected domain/language/adapter/concern really occurs in the changed path and the concrete example survives the actual producer/consumer boundary. An asserted behavior of an external system is verified at its consumption site ([boundary-handoff](planning/boundary-handoff.md)): a definition-site citation alone is an evidence gap, not coverage. Route omissions matter only if they expose a material plan defect; a playbook suggestion alone is `PLAN_NIT` or `PLAN_SCOPE_EXPANSION`, not new authority. Distinguish PLAN_OMISSION from PLAN_ALREADY_REQUIRED_BUT_NOT_IMPLEMENTED; `PLAN_ALREADY_REQUIRED_BUT_NOT_IMPLEMENTED` is not solved by extending the plan indefinitely.
 
-A pair of sections may run in parallel only when all are true:
+It does not perform repository audit, propose a preferred architecture merely because it is cleaner, add unrequested edge cases, or write implementation details beyond the minimum correction needed to make the existing plan executable.
 
-- Neither depends on the other's code or accepted behavior.
-- They do not modify the same state owner, schema, public contract, migration, or central coordinator.
-- Their test fixtures and generated artifacts do not conflict.
-- Their branches/worktrees are isolated.
-- The integration order and checkpoint are predetermined.
-- A conflict can be resolved without inventing new semantics.
+## Triggered plan-review lenses
 
-When uncertain, run sequentially. Parallel agents can increase throughput while also multiplying integration states and reviewer load.
+Apply these only when the planned change activates the corresponding semantic risk. They sharpen the existing plan review; they do not add a second reviewer or broaden the product.
 
-## 9. Hard-cap re-decomposition
+### Representation and precedence lens
 
-When one active section reaches five fresh full `SECTION` review rounds without two consecutive clean rounds, do not increase the review budget. Treat the five reports as empirical evidence that the section boundary is still wrong for agentic implementation/review.
+For a data/config/schema/model-shape change, enumerate the existing representations that produce, normalize, persist, override, project, edit, or default the value. Freeze:
 
-The `@sol_max` decomposer should split only the failed section and preserve accepted predecessors plus the original feature contract. Use hierarchical IDs such as `S03.1`, `S03.2`; if `S03.1` later fails, use `S03.1.1`, `S03.1.2`.
+- missing vs explicit `null`, zero, empty, masked, sentinel, placeholder, and legacy-absent states when they have distinct semantics;
+- authoritative producer and fallback/default producers;
+- whether fallback depends on **presence** or **validity/eligibility**;
+- persisted override and merge/shadow precedence;
+- server -> serialized JSON -> browser/runtime representation -> input/editor -> save round-trip, including numeric range/precision limits;
+- compatibility/removal behavior actually requested;
+- one acceptance case proving every newly required field survives the authoritative path.
 
-Count dots in the lineage ID as recursive split depth: `S03` is depth `0`, `S03.1` depth `1`, `S03.1.1` depth `2`, and `S03.1.1.1` depth `3`. Complete hard-cap backup, decomposition, plan validation, retry setup, and descendant execution autonomously through depth `3`. Only when the next split would create depth `4+` should orchestration pause and ask Human whether to authorize deeper recursion or re-plan the affected boundary.
+This catches plans that update the canonical resource but omit saved overrides, materialized defaults, third-party presets, explicit-null semantics, fallback ordering, or browser representation. Do not turn the matrix into a repository-wide schema inventory.
 
-Good split axes include:
+### Foundation-versus-local-patch lens
 
-- one observable behavior per descendant;
-- one authoritative state/ownership boundary per descendant where practical;
-- contract introduction separated from consumer migration;
-- schema expand, data migrate, and contract/remove separated;
-- enabling refactor separated from behavior;
-- policy definition separated from enforcement integration;
-- producer separated from worker/retry/dead-letter behavior;
-- root-cause classes repeatedly exposed by different review rounds separated into independent oracles.
+Apply when a plan would implement the same validation, normalization, routing, persistence, selection, or state-transition rule in more than one owner, or when local guards are being stacked around a defect owned by a shared component.
 
-A valid re-decomposition must update:
+The reviewer must identify:
 
-- requirement coverage matrix;
-- dependency graph and downstream `Requires`;
-- integration checkpoints;
-- deferred-work ownership;
-- section lineage and replan generation.
+- the existing authoritative owner, if one exists;
+- which sibling callers remain wrong under the local-patch option;
+- the smallest bounded foundational correction;
+- the smallest local correction and its explicit residual duplication/risk.
 
-Do not preserve failed implementation structure merely because code already exists. The retry starts from the failed parent section's original `section_base`; the backup branch exists for forensic comparison and recovery, not as the new implementation base.
+When changing the foundation materially widens scope, classify this as `OWNER_DECISION` and present only those two bounded alternatives. Do not silently choose the wider foundation change, and do not create a service/framework. A cosmetic helper extraction, one-field dictionary wrapper, or single-use abstraction is `PLAN_NIT`, not a blocker.
 
-## 10. Common anti-patterns
+### Lifecycle and failure-state lens
 
-### Horizontal layer plan
+For async requests, retries, replay, cancellation, process restarts, background work, or UI drafts, write the smallest transition table covering:
 
-```text
-S01 database
-S02 backend
-S03 frontend
-S04 tests
-```
+- start/in-flight/success/failure/cancel/retry states;
+- late or stale result ownership;
+- partial side effects and replay eligibility;
+- persisted-but-not-applied or stopped-but-recoverable states;
+- exact state that a user retry resumes.
 
-Problem: no section has an observable outcome, tests arrive after design errors have compounded, and the final section becomes the first real integration.
+The reviewer checks that each accepted failure state has an owner and observable outcome. It must not require a generalized state-machine framework.
 
-Better: slice by outcome, with contract or migration sections only where necessary.
+### Inventory completeness lens
 
-### One section per directory or file type
+For version adaptation, migration, source inventory, provider/catalog propagation, or a field rename across representations, require a bounded machine-assisted inventory of the relevant owner class before implementation. The plan reviewer verifies that the inventory method and exclusions are credible and that every discovered owner is assigned or explicitly excluded. It does not conduct an open-ended repository audit or require proof beyond the named owner class.
 
-Problem: file layout is not a semantic boundary. Reviewers still need the whole feature to know whether a section is correct.
+### Candidate classes and admission
 
-### “Foundation” section with speculative abstractions
+Classify each candidate exactly once:
 
-Problem: the agent designs APIs without actual usage evidence, and later sections inherit wrong assumptions.
+- `PLAN_BLOCKER`: existing authority or source reality proves the plan is incomplete, contradictory, or unbuildable.
+- `PLAN_SCOPE_EXPANSION`: plan item lacks external authority or is not unavoidable; remove/defer it rather than implement it.
+- `OWNER_DECISION`: the user/repository owner must decide product semantics, compatibility, migration meaning, threat model, or rollout.
+- `PLAN_NIT`: non-blocking wording, formatting, or optional optimization.
 
-Better: pair a new seam with at least one real use or walking skeleton.
+Every `PLAN_BLOCKER` must include:
 
-### Final “wire everything together” section
+- authority/requirement ID;
+- concrete source or repository evidence;
+- expected failure if unchanged;
+- affected section/owner;
+- smallest plan-only correction;
+- confirmation that the correction adds no new product guarantee.
 
-Problem: all cross-section risk is delayed to the largest, least reviewable step.
+The main agent owns admission. Record one compact ledger in `.agent-work/reviews/PLAN-REVIEW.md`; do not create RAW/ADMISSION pairs. A missing original example/test mapping is a `PLAN_BLOCKER`; an obsolete instruction retained after a user correction is `PLAN_SCOPE_EXPANSION`.
 
-Better: define integration checkpoints after each dependency cluster.
+### Sufficient detail, not a fully prewritten implementation
 
-### Mixed refactor and behavior
+A plan is executable when the required outcome, cross-owner interfaces, current owners, dependency order, allowed edits, meaningful checks and safe intermediate states are clear. A reviewer must identify a concrete ambiguity that could produce an authority-backed failure, not merely request more detail.
 
-Problem: movement and semantics obscure each other, making defects and rollback harder.
+- A new test/probe/source file may be absent before implementation when its owning section and create-before-run responsibility are declared. Its absence alone is not a blocker.
+- Internal helper names, exact private types/library calls, probe output filenames and private JSON layouts are normally implementer decisions. Freeze them only when an existing public/shared consumer or repository requirement needs that exact contract. Cite that authority; do not turn a suggestion into a new acceptance obligation.
+- Review verifies declaration of required checks; it does not require the unfinished feature's tests/build/live results before implementation. Basic section-ID/dependency/role syntax is checked once by the helper; other formatting belongs to the parent and cannot create paid review work.
+- Temporary migration coexistence may be explicitly allowed until the consuming section removes the old owner. Do not demand a future consumer/adaptor in an earlier section's acceptance; move that consumer-specific evidence to its owning section or integration.
+- Each candidate proposes a bounded correction. The reviewer does not write an admission ledger, approve its own suggested scope, demand an additional full review, or decide that a new R2/R3 label resets the review allowance.
 
-Better: enabling refactor first with characterization tests, then behavior.
+### Finite recheck rule
 
-### Parallel dependent agents
+Both embedded-profile independent PLAN coverages are required ([reviewer-orchestration.md](reviewer-orchestration.md)); both clean records must cover the final executable plan. Main saves the original reports and owns admission. After ordinary corrections rerun the structural validator only if IDs/dependencies/tiers changed. One bounded PLAN_DELTA per originating round verifies admitted material corrections and invalidated coverage; it is not another full review.
 
-Problem: both agents invent the shared contract, resulting in incompatible implementations or a large reconciliation patch.
+No third full pass, repeating committee, recursive planning agent, evidence-only section or matching-hash approval. Report a real unresolved owner/scope/capability decision when bounded closure is exhausted. A rename, changed hash or new reviewer label never resets that policy. No implementer is spawned until both rounds, admission and necessary deltas actually finish.
 
-Better: freeze the shared contract in an accepted predecessor section.
+## Examples
 
-### “Done” defined by files changed
+### Account quota switching
 
-Problem: agents optimize for output rather than behavior.
+Better sequence:
 
-Better: define observable acceptance criteria and commands.
+1. Probe actual metadata and terminal signal path.
+2. Add minimal per-turn affinity in the existing owner.
+3. Add safe switch/replay only for confirmed quota exhaustion before output.
+4. Integrate with UI/status if requested.
 
-## 11. Example decomposition
+Do not start with a generalized scheduler, parser framework, persistent registry, or hostile-input model unless required.
 
-Feature: add resumable bulk upload with per-tenant quotas.
+Settings/status UI belongs in the feature only when explicitly requested or required by an existing repository product convention. A backend switch mechanism does not automatically authorize a configuration surface or monitoring dashboard.
 
-```text
-S00  Walking skeleton: one small upload travels through UI, API, storage, and status readback.
-S01  Quota policy owner and denial behavior with unit/contract tests.
-S02  Expand upload session schema/API for resumable offsets; old single-shot path remains valid.
-S03  Implement server-side chunk validation, idempotency, and recovery.
-S04  Implement client resume flow and user-visible states behind a release flag.
-CP1  Integrate S01–S04: quota + interrupted upload + resume end to end.
-S05  Migrate eligible callers and telemetry dashboards.
-S06  Rollout controls, cleanup, documentation, and remove obsolete path after evidence.
-FINAL Cross-section acceptance, migration rehearsal, rollback, security, performance, and flag-lifecycle review.
-```
+### Hosted-search provider integration
 
-This plan has vertical outcomes, explicit high-risk boundaries, an intermediate integration checkpoint, and a defined contraction phase.
+Better sequence:
+
+1. Exercise one official provider request/response seam.
+2. Normalize the minimum result/citation/error contract in the existing provider owner.
+3. Activate it through the existing configuration/public path required for actual use.
+4. Add focused behavior tests and the repository's existing integration gate.
+
+Do not create a standalone evidence publisher, hostile-object parser, credential-reconstruction proof system, custom compatibility program, or general provider framework unless an external authority independently requires it.
+
+### URL state removal
+
+Better sequence:
+
+1. Remove internal UI state from representative routes.
+2. Preserve explicit allowlisted functional query parameters.
+3. Add route-level regressions and one browser flow.
+4. Integrate across remaining named routes.
+
+Do not add a whole-tree source detector or permanent URL grammar/CI governance system unless the owner requested that separate feature.
+
+## Stage-evidence lessons
+
+Before freezing a relevant parent, include a concrete producer→public entry→consumer path and an executable example. If a consumer needs an increment early, make it a genuinely accepted section; otherwise keep related internal modules as subsections and require parent reconciliation.
+
+For UI async changes, freeze one repeated-event trajectory (edit→save→navigate/close→late result→repeat) and the authoritative pending/identity owner. For representation changes, freeze missing/null/zero/invalid and server→serializer→browser→save round trips. For algorithms, name expected cardinality and a worst-case oracle. For runtime work, state the actual success/terminal/cancel contract and the order of deterministic versus live evidence. These lenses do not authorize unrelated hardening.
+
+Separate PLAN_OMISSION from PLAN_ALREADY_REQUIRED_BUT_NOT_IMPLEMENTED: `PLAN_ALREADY_REQUIRED_BUT_NOT_IMPLEMENTED` needs the exact requirement and production test in the task packet, not more plan reviewers.
+
+Sections are selected by business acceptance; subsection choice must identify a real internal module increment, a meaningful task-model boundary, or both. Never split by LOC alone or manufacture an interface merely to use a cheaper worker — the oracle test separating a legitimate cost-motivated split from manufacturing is in [subsections.md](subsections.md).
+
+## Readable plan contract
+
+PLAN-FULL is Markdown, not a narrative file paired with a machine-readable JSON schedule. The section helper checks IDs, dependency existence/cycles, parent membership and an explicit profile-resolved impl route per unit. Required business authority, constraints, tests and joint oracles remain semantic PLAN-review responsibilities; no fixed heading vocabulary, field count or hash grants approval. Missing formatting alone is not a new review candidate. Ordinary corrected PLAN text can be admitted by main with the original result preserved; changed substantive boundaries receive only the authorized delta recheck.
+
+## Unit size follows the contract, not a worker invocation
+
+Choose a parent by one independently meaningful accepted outcome. Use children for its producer/consumer or state-transition pieces when one packet would hide ownership, repair history or an untested handoff. Freeze their shared contract and joint oracle before splitting; a lifecycle adapter can need separate projection, interaction ownership and reconnect checkpoints without creating three independent products. Do not divide merely by language, line count or number of files.
+
+If one worker will implement two nominal parents with one combined acceptance, decide before PLAN review whether they are really one parent with children. Do not claim two serial parent acceptances from one combined result. Conversely, a small cohesive change does not need a child for every function. Record a one-line parallel/serial reason in the existing plan, using actual owner/contract/resource dependencies; no parallelism quota or extra planning report.

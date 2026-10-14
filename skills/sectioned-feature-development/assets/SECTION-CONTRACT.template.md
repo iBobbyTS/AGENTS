@@ -1,80 +1,73 @@
-# Section Contract：<Sxx — Title>
+# `<ID>` Section Contract
 
-## Identity and Baseline
+- Feature ID:
+- Title:
+- Section base:
+- Plan source:
+- Primary owner:
+- Original section lineage:
 
-- Feature: `<name>`
-- Section: `<Sxx / Sxx.n>`
-- Parent section: `<none or Sxx>`
-- Lineage: `<Sxx -> Sxx.n or original>`
-- Replan generation: `<0+>`
-- Contract revision: `1`
-- Frozen at: `<timestamp>`
-- Section base: `<commit or fingerprint>`
-- Dependency heads: `<Syy=commit>`
-- Plan fingerprint: `<sha256>`
-- Implementer profile: `<profile>`
-- Review profile: `sol_xhigh`
-- Acceptance rule: `2 consecutive clean full SECTION reviews within 5 rounds`
+## Outcome and changed contract
 
-## Goal
+- Exact observable behavior this section adds or changes.
 
-<one coherent outcome or enabling seam>
+## Authority and necessity
 
-## Observable Behavior Increment
+- External authority anchor: user decision, repository/current-production obligation, or unavoidable correctness dependency.
+- Why this section is required for the minimum end-to-end feature outcome:
+- Why an existing owner/path or smaller local change cannot satisfy it:
+- A plan, another section, or reviewer suggestion alone is not an authority anchor.
+- Local-patch versus shared-foundational-owner decision: `not-applicable | local patch authorized | shared owner authorized | owner decision required`
+- Decision authority / why sibling callers remain correct:
 
-- <behavior>
+## Direct impact cone
 
-## Scope and Semantic Boundaries
+### Allowed-to-edit manifest
 
-- Expected files/symbols/workflows: <...>
-- Owners modified: <...>
-- High-risk boundaries: <...>
-- Explicitly permitted mechanical/generated changes: <...>
+- Owners/files/symbols/routes/workflows the implementer or repair agent may change:
 
-## Non-goals
+### Inspect-only dependency paths
 
-- <...>
+- Direct callers/callees/serializers/contracts/tests that may be inspected to prove causality:
+- An unlisted dependency may be inspected only with an exact data/control/serialization/contract chain from a changed symbol. Inspection does not authorize editing it.
 
-## Feature-level Invariants
+### Explicit exclusions
 
-- `INV-01`: <...>
-- `INV-02`: <...>
+- Owners/mechanisms that may not be added or changed without a main-agent scope decision:
 
-## Section Acceptance Criteria
+## Existing invariants
 
-- `Sxx-AC-01`: <trigger, expected behavior, evidence>
-- `Sxx-AC-02`: <negative or failure behavior>
+- Invariants and repository rules this section must preserve.
 
-## Verification
+## Allowed structural changes
 
-```bash
-<command>
-```
+- `none`, or explicit requirement-anchored mechanisms.
 
-- Runtime/manual evidence: <...>
-- Checks that may be unavailable and blocker policy: <...>
+## Non-goals and deferred owner
 
-## Compatibility, Migration, Rollout, and Recovery
+- Unsupported behavior/environments/actors:
+- Named later section/owner:
 
-- Intermediate repository/runtime state: <valid because...>
-- Compatibility/migration: <...>
-- Feature flag/rollout: <...>
-- Rollback/recovery: <...>
-- Observability/audit: <...>
+## Review intensity
 
-## Allowed Deferred Work
+- `MECHANICAL | BOUNDED | HIGH_RISK`
 
-- <item -> named section; none if empty>
+## Acceptance criteria
 
-## Open Decisions
+- `AC-<ID>` — Falsifiable behavior, edge, and error outcome.
 
-- `none` before implementation, otherwise block.
+## Validation tiers
 
-## Replan / Hard-Cap Triggers
+- Targeted:
+- Section/package:
+- Integration checkpoint, if triggered:
 
-- Acceptance criteria or behavior changes.
-- Public contract/schema/permission/state owner/concurrency/destructive/rollout semantics change.
-- Scope materially expands.
-- Base/head changes outside tracked implementation or repair.
+## Review boundary
 
-- Five full SECTION review rounds without two consecutive clean rounds retires this attempt and triggers automatic `@sol_max` re-decomposition (profile `sol_max`).
+Blocking findings must be `DIFF_CAUSED`, tightly proven `MERGE_BLOCKING_DEPENDENCY`, or an `EVIDENCE_GAP` citing an exact acceptance criterion/repository gate. Review may not add a new product guarantee, threat model, durability/compatibility promise, generalized framework, global analyzer, or CI policy.
+
+A real blocker requiring a new owner returns to the main agent for one explicit causal scope amendment or owner rebound. The reviewer or repair agent may not expand this manifest.
+
+## Reset triggers
+
+- Material changes to API/schema/trust/persistence/state ownership/concurrency/deployment/section goal.

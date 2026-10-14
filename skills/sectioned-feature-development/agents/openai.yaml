@@ -1,4 +1,4 @@
 interface:
   display_name: "Sectioned Feature Development"
-  short_description: "Split large changes with auto re-decomposition"
-  default_prompt: "Use $sectioned-feature-development to implement this large change as reviewable sections, require two clean reviews per section, automatically re-split through recursion depth 3, and ask Human only before depth 4+ or for genuine product decisions."
+  short_description: "Agent-led sections with bounded independent review"
+  default_prompt: "Use $sectioned-feature-development to save the plan, delegate real section work, review bounded changes, and deliver with basic structural checks and agent-managed scheduling."

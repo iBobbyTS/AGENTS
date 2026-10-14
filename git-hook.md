@@ -5,7 +5,7 @@
 ## 设计思想
 
 1. 提醒逻辑放在 Git hook，不放在 Codex 自己的判断里。
-2. 可执行脚本随仓库版本控制；安装脚本只写入仓库本地 Git 配置。
+2. 可执行脚本随仓库版本控制；安装命令只写入仓库本地 Git 配置。
 3. 提醒必须是非阻塞的，只负责输出提示，不影响 commit 成功。
 4. 明确的审计标记优先于猜测。最近一次带 `Maintenance-Audit: true` 的提交，是最新审计点。
 
@@ -16,10 +16,10 @@
 在仓库根目录执行：
 
 ```sh
-./scripts/install-git-hooks.sh
+git config --local core.hooksPath .githooks
 ```
 
-该脚本设置当前仓库的 `core.hooksPath=.githooks`；不会修改全局 Git 配置，也不会影响其他项目。
+该命令设置当前仓库的 `core.hooksPath=.githooks`；不会修改全局 Git 配置，也不会影响其他项目。
 
 ### 2. 仓库内的提醒脚本
 
@@ -63,7 +63,7 @@ git config --local codex.maintainabilityAuditBaseline <HEAD_SHA>
 
 ### 4. 通过初始化 skill 连接新项目
 
-专门的 [$init-codex-project](skills/init-codex-project) 初始化 skill 负责把新仓库接进这套机制；仓库需提交 `.githooks/` 与安装脚本，随后执行安装脚本。
+专门的 [$init-codex-project](skills/init-codex-project) 初始化 skill 负责把新仓库接进这套机制；仓库需提交 `.githooks/`，随后执行上述安装命令。
 
 它应该：
 
@@ -91,7 +91,7 @@ After committing, report audit reminder shown by git hooks.
 - 不要让提醒阻塞正常提交。
 - 不要把“多久提醒一次”做成按天或按周的定时任务，这个问题本质上是 Git 历史长度问题。
 - 不要猜测审计点，优先读取显式 `Maintenance-Audit: true` 标记。
-- 新 clone 或新 worktree 必须各自执行一次 `./scripts/install-git-hooks.sh`，因为 `core.hooksPath` 是本地 Git 配置，不会由 Git 版本控制。
+- 新 clone 或新 worktree 必须各自执行一次 `git config --local core.hooksPath .githooks`，因为 `core.hooksPath` 是本地 Git 配置，不会由 Git 版本控制。
 
 ## 最小检查
 
