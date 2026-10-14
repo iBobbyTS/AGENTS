@@ -1,10 +1,11 @@
 # AGENTS.md
 
+[中文版](README.zh-cn.md)
+
 My personal Coding Agent constraints, shared here for backup and reference.
 
 This README was written entirely by hand, without AI assistance. Almost all other files in this repository are 100% AI-generated. The English version was translated by GPT 6.1 Sol.
 
-[中文版](README.zh-cn.md)
 
 ## Table of Contents
 
