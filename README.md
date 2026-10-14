@@ -1,70 +1,94 @@
 # AGENTS.md
-个人使用的Coding Agent约束，作为备份和分享。<br>
-本README纯手打，无AI，仓库内其余文件基本 100%AI。英文版为GPT 6.1 Sol翻译。
 
-## 目录
+My personal Coding Agent constraints, shared here for backup and reference.
 
-- [AGENTS.md](#agentsmd文件)
+This README was written entirely by hand, without AI assistance. Almost all other files in this repository are 100% AI-generated. The English version was translated by GPT 6.1 Sol.
+
+[中文版](README.zh-cn.md)
+
+## Table of Contents
+
+- [AGENTS.md](#agentsmd-file)
 - [Git Hook](#git-hook)
 - [Skills](#skills)
-    ### Sectioned Feature Development
-    - [grill-me](#grill-me): 先挖掘需求，不问产品架构。
-    - [sectioned-feature-development](#sectioned-feature-development): 分块开发大功能，含planning知识库。
-    - [code-review](#code-review): 一次功能修改后的代码审核。
-    ### Quality Control
-    - [quality-steward](#quality-steward): 是否对目标项目启动审计的检测，建议自动化定期运行。
-    - [general-audit](#general-audit): 定期项目审计，含审计知识库。
-    - [deployment-preflight](#deployment-preflight): 部署前检查。
-    ### Debug
-    - [adaptive-debugging](#adaptive-debugging): 第一次修复失败后走这个流程，包含debug知识库。
-    - [debug-notes-to-engineering-notes](#debug-notes-to-engineering-notes): 仅在官方文档不全/有误时才使用，结合[adaptive-debugging](#adaptive-debugging)，燃烧自己的token，为后人照亮debug之路。
-    ### 其它工具
-    - [feishu-message-sender](#feishu-message-sender): 飞书自定义机器人在长任务里定时汇报
 
+### Sectioned Feature Development
+- [grill-me](#grill-me): Clarifies requirements without asking about product architecture.
+- [sectioned-feature-development](#sectioned-feature-development): Breaks large features into sections for implementation. Includes a planning knowledge base.
+- [code-review](#code-review): Reviews code after a feature change.
 
-## AGENTS.md文件
-[AGENTS.md](AGENTS.md) 是 Codex, Zcode 等 agent 默认读取的约束名，总共有2层 `AGENTS.md`，一个在 `~/.codex/AGENTS.md`，另一个在项目的根目录里。
+### Quality Control
+- [quality-steward](#quality-steward): Determines whether a project is due for an audit. Recommended for periodic automated execution.
+- [general-audit](#general-audit): Periodic project audits, including an audit knowledge base.
+- [deployment-preflight](#deployment-preflight): Pre-deployment checks.
 
+### Debug
+- [adaptive-debugging](#adaptive-debugging): A debugging workflow to follow after the first fix attempt fails. Includes a debugging knowledge base.
+- [debug-notes-to-engineering-notes](#debug-notes-to-engineering-notes): Used only when official documentation is incomplete or incorrect. Works with [adaptive-debugging](#adaptive-debugging), burning your own tokens to light the debugging path for those who come after you.
 
-主要职责：
+### Other Tools
+- [feishu-message-sender](#feishu-message-sender): Sends periodic progress updates through a Feishu custom bot during long-running tasks.
 
-【待填写】
+## AGENTS.md File
+
+[AGENTS.md](AGENTS.md) is the default filename used by Coding Agents such as Codex and ZCode for their instructions and constraints.
+
+There are two levels of `AGENTS.md`:
+- `~/.codex/AGENTS.md`: Global instructions.
+- `AGENTS.md` in the project root: Project-specific instructions.
+
+Main responsibilities:
+
+[To be completed]
 
 ## Git Hook
 
-Hook 脚本已随仓库提供；clone 后在仓库根目录执行 `./scripts/install-git-hooks.sh` 即可为当前仓库启用。[git-hook.md](docs/git-hook.md) 说明配置与验证方式。
-- 每次审计完成时提交消息带上 `Maintenance-Audit: true`。
-- 提醒脚本位于 `.githooks/`，不依赖用户目录中的绝对路径。
-- 每次提交时Git会提醒下次审计什么时候或已经超过了设定间隔。
+The hook scripts are included in this repository. After cloning, run `./scripts/install-git-hooks.sh` from the repository root to enable them for the current repository. See [git-hook.md](docs/git-hook.md) for configuration and verification instructions.
+
+- Every completed audit must have `Maintenance-Audit: true` in its commit message.
+- The reminder scripts are located in `.githooks/` and do not depend on absolute paths in the user's home directory.
+- On every commit, Git reminds you when the next audit is due or whether the configured audit interval has already been exceeded.
 
 ## Skills
 
 ### Sectioned Feature Development
 
 #### [grill-me](skills/grill-me)
-用户需要可以描述清楚自己的需求，Agent用这个skill只问用户没描述清的部分，不问架构/代码层面的问题。
-> This skill is an independently rewritten, requirements-focused adaptation inspired by Matt Pocock's `grill-me` / `grilling` skills from https://github.com/mattpocock/skills. The upstream project is licensed under the MIT License. Upstream copyright: Copyright (c) 2026 Matt Pocock
+
+Users should be able to clearly describe what they want. The Agent uses this skill to ask only about requirements the user has not explained clearly, without asking architecture- or code-level questions.
+
+> This skill is an independently rewritten, requirements-focused adaptation inspired by Matt Pocock's `grill-me` / `grilling` skills from [https://github.com/mattpocock/skills](https://github.com/mattpocock/skills). The upstream project is licensed under the MIT License. Upstream copyright: Copyright (c) 2026 Matt Pocock
+
 #### [sectioned-feature-development](skills/sectioned-feature-development/)
 
-对于大功能，必须先制定完整计划，再分section实现，大致流程如下：
+For large features, a complete plan must be created before implementation begins. The feature is then implemented section by section.
+
+The general workflow looks like this:
 
 ```c
 skill sectioned_feature_development() {
-    主 Agent 创建完整计划，拆分section/subsection，决定对应的模型;
-    GPT 6 Astra (Xhigh) 执行 Plan Review;
+    Main Agent creates a complete plan, divides it into sections/subsections,
+    and assigns models to each;
+
+    GPT 6 Astra (Xhigh) performs Plan Review;
+
     for section in sections {
-        拆分section到单独的文件;
-        switch (section定义) {
+        Extract the section into a separate file;
+
+        switch (section definition) {
             case impl_std:
-                DeepSeek V4.1 Flash (high) 实现;
-            case value2:
-                GPT 6.1 Sol (high) 实现;
+                DeepSeek V4.1 Flash (high) implements the section;
+            case impl_large:
+                GPT 6.1 Sol (high) implements the section;
         }
-        while true {  // Code review循环
-            调用 GLM 5.3 使用 $code-review 进行审查;
-            没问题后用 GPT 6.1 Sol 再审查;
-            if 循环次数 > 5 {
-                打包advisor_pack给GPT 6 Astra Pro裁决;
+
+        while (true) {  // Code review loop
+            Invoke GLM 5.3 with $code-review;
+            Once issues are resolved, run another review with GPT 6.1 Sol;
+
+            if (loop count > 5) {
+                Package an advisor_pack for GPT 6 Astra Pro to adjudicate;
+                break;
             }
         }
     }
@@ -73,36 +97,61 @@ skill sectioned_feature_development() {
 
 #### [code-review](skills/code-review/)
 
-GPT 5.6 Sol Pro 自己写的，我没有看过具体内容，实战下来挺好用的。
+Written entirely by GPT 5.6 Sol Pro. I haven't actually read through the details myself, but it has worked quite well in practice.
 
 ### Quality Control
 
 #### [quality-steward](skills/quality-steward)
-适合自动化运行，配置好需要审查的仓库，每次agent启动时自动在这些仓库看提交需不需要审计。建议给Flash级别模型去做，不需要太强推理能力。
+
+Suitable for automated execution. Configure the repositories that need monitoring, and have the Agent check their commits at startup to determine whether an audit is due.
+
+I recommend assigning this to a Flash-tier model. It doesn't require particularly strong reasoning capabilities.
 
 #### [general-audit](skills/general-audit/)
 
-`GPT 6 Astra Pro` 上网调研并制定的审计方式。包含大部分审计面。
+An auditing methodology researched and developed by `GPT 6 Astra Pro`, with web research. Covers most major audit areas.
 
 #### [deployment-preflight](skills/deployment-preflight)
 
-检查部署安全，数据库会不会丢数据等。
+Checks deployment safety, including whether a deployment could cause database data loss or other issues.
 
 ### Debug
 
-#### [adaptive-debugging](skills/adaptive-debugging/)
-包含Debug知识库。
-先做“证据盘点”，包括上一轮改了什么、为什么没解决、现在的失败现象是什么、有没有可运行复现。然后再进原 
-新增流程：把试错过程记录在`.agent-work/debug`下，避免疑难杂症经历过多次上下文压缩后忘记之前试过的错误路径。
+#### [adaptive-debugging](skills/adaptive-debugging)
+
+Includes a debugging knowledge base.
+
+Starts with an **evidence inventory**: what changed during the previous attempt, why it failed to resolve the issue, what the current failure looks like, and whether a runnable reproduction is available. The workflow then proceeds with the original debugging process.
+
+New addition: records debugging attempts under `.agent-work/debug` so that, after multiple context compactions during particularly difficult debugging sessions, the Agent doesn't forget which unsuccessful approaches have already been tried.
 
 #### [debug-notes-to-engineering-notes](skills/debug-notes-to-engineering-notes)
 
-使用[adaptive-debugging](#adaptive-debugging)修完问题后把 `.agent-work/debug` 里的记录沉淀到 `docs/engineering-notes`，方便后续开发和其他人阅读。会记录正确做法、错误尝试记录、和官方文档不符的部分、版本记录。不包含项目/实现约定。
+After resolving an issue using [adaptive-debugging](#adaptive-debugging), this skill consolidates the records from `.agent-work/debug` into `docs/engineering-notes` for future development and other contributors.
 
-### 其它工具
+It documents correct approaches, failed attempts, discrepancies with official documentation, and version-specific findings.
+
+It does **not** document project-specific or implementation conventions.
+
+### Other Tools
 
 #### [feishu-message-sender](skills/feishu-message-sender)
 
-建议长任务时使用，不要让agent在前台轮询。使用这个skill它会复制一份模板脚本，然后编辑脚本并后台启动，用你的飞书机器人发送一条任务开始通知、每小时的进度汇报、任务结束总结。<br>
-机器人配置放在 `~/.config/feishu-message-sender/secret.json`，格式为`{"webhook":"https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxx","secret":"签名秘钥","name":"本电脑的名字"}`。<br>
-飞书官方：[自定义机器人使用指南](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot?lang=zh-CN)（给agent看的话用[md版本](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot.md)）
+Recommended for long-running tasks. Don't have the Agent poll for status updates in the foreground.
+
+This skill copies a template script, modifies it, and launches it in the background. It uses your Feishu bot to send:
+- A notification when the task starts.
+- Hourly progress reports.
+- A final summary when the task finishes.
+
+Bot configuration is stored at `~/.config/feishu-message-sender/secret.json`:
+
+```json
+{
+  "webhook": "https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxx",
+  "secret": "signature secret",
+  "name": "name of this computer"
+}
+```
+
+Official Feishu documentation: [Custom Bot Usage Guide](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot?lang=zh-CN) ([Markdown version](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot.md), recommended when providing documentation to an Agent).
