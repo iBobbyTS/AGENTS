@@ -1,0 +1,6 @@
+interface:
+  display_name: "Adaptive Debugging"
+  short_description: "Root-cause debugging for second-pass and complex failures."
+  default_prompt: "Use $adaptive-debugging; this issue survived an initial attempt or is complex enough to require evidence-driven root-cause analysis. Load only the relevant domain playbooks and verify the original failure contract before concluding."
+policy:
+  allow_implicit_invocation: true
